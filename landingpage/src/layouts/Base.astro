@@ -1,0 +1,55 @@
+---
+import "@fontsource/geist-sans/400.css";
+import "@fontsource/geist-sans/500.css";
+import "@fontsource/geist-sans/600.css";
+import "@fontsource/geist-mono/400.css";
+import "@fontsource/geist-mono/600.css";
+import "@fontsource-variable/fraunces";
+import "@phosphor-icons/web/regular/style.css";
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  lang?: string;
+  skipLink?: string;
+}
+
+const { title, description, lang = "pt-BR", skipLink = "Pular para o conteúdo" } = Astro.props;
+const base = Astro.site ?? "https://interruptor.app";
+const canonical = new URL(Astro.url.pathname, base);
+const altPath = lang === "pt-BR" ? "/en/" : "/";
+---
+
+<html lang={lang} data-light="on">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang={lang} href={canonical} />
+    <link rel="alternate" hreflang={lang === "pt-BR" ? "en" : "pt-BR"} href={new URL(altPath, base)} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={lang === "pt-BR" ? "pt_BR" : "en_US"} />
+    <meta name="twitter:card" content="summary" />
+    <script is:inline>
+      // Evita flash: restaura estado antes de pintar.
+      try {
+        const saved = sessionStorage.getItem("interruptor:light");
+        if (saved === "off") document.documentElement.dataset.light = "off";
+      } catch {}
+      document.documentElement.classList.add("has-motion");
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">{skipLink}</a>
+    <slot />
+    <div class="darkness" aria-hidden="true"></div>
+    <slot name="overlays" />
+  </body>
+</html>

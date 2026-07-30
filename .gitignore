@@ -1,0 +1,16 @@
+.DS_Store
+*.swp
+DerivedData/
+dist/
+
+# App
+app/Interruptor.app/Contents/MacOS/Interruptor
+
+# Landing
+landingpage/node_modules/
+landingpage/dist/
+landingpage/.astro/
+
+# Env
+.env
+.env.*

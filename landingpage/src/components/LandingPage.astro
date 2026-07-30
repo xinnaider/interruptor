@@ -1,0 +1,401 @@
+---
+import Base from "../layouts/Base.astro";
+import HeroSwitch from "./HeroSwitch.astro";
+import Fireflies from "./Fireflies.astro";
+import { GITHUB_URL, DOWNLOAD_URL } from "../consts";
+import { copy, type Lang } from "../i18n";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const c = copy[lang];
+const otherLang: Lang = lang === "pt" ? "en" : "pt";
+---
+
+<Base title={c.metaTitle} description={c.metaDescription} lang={c.htmlLang} skipLink={c.skipLink}>
+  <header class="site-header">
+    <nav class="nav-pill" aria-label="Principal">
+      <a class="brand" href={lang === "pt" ? "/" : "/en/"}>
+        <img src="/favicon.svg" alt="" width="18" height="18" />
+        Interruptor
+      </a>
+      <div class="nav-links">
+        <a href="#faq">{c.faq.eyebrow}</a>
+        <a href={GITHUB_URL} rel="noopener">GitHub</a>
+        <span class="lang-divider" aria-hidden="true"></span>
+        <a
+          href="/"
+          class:list={["lang-link", { active: lang === "pt" }]}
+          aria-current={lang === "pt" ? "page" : undefined}
+          aria-label={c.langLabel}>PT</a
+        >
+        <a
+          href="/en/"
+          class:list={["lang-link", { active: lang === "en" }]}
+          aria-current={lang === "en" ? "page" : undefined}
+          aria-label={c.langLabel}>EN</a
+        >
+      </div>
+    </nav>
+  </header>
+
+  <main id="conteudo">
+    <section class="hero container" data-mouse-parallax data-parallax-section>
+      <div class="ambient-wrap" data-parallax-layer data-parallax-speed="0.22" aria-hidden="true">
+        <div class="ambient" data-mouse-depth="0.09"></div>
+      </div>
+
+      <div class="hero-copy">
+        <h1 class="gradient-text" data-motion-text="lines">
+          <span class="motion-line-mask"
+            ><span class="motion-line">{c.hero.line1}</span></span
+          >
+          <span class="motion-line-mask"
+            ><span class="motion-line">{c.hero.line2}</span></span
+          >
+        </h1>
+        <p class="sub" data-reveal="fade-up" data-reveal-delay="0.35">
+          {c.hero.sub}
+        </p>
+        <div class="cta-row" data-reveal="fade-up" data-reveal-delay="0.5">
+          <a class="btn btn-primary" href={DOWNLOAD_URL} rel="noopener" data-magnetic>
+            <i class="ph ph-download-simple" aria-hidden="true"></i>
+            {c.hero.download}
+          </a>
+          <a class="btn btn-ghost" href={GITHUB_URL} rel="noopener" data-magnetic>
+            <i class="ph ph-github-logo" aria-hidden="true"></i>
+            {c.hero.github}
+          </a>
+        </div>
+        <div class="proof" data-reveal="fade-up" data-reveal-delay="0.65">
+          <span><i class="ph ph-seal-check" aria-hidden="true"></i> {c.hero.proof1}</span>
+          <span>{c.hero.proof2}</span>
+        </div>
+      </div>
+
+      <HeroSwitch labelOn={c.switch.on} labelOff={c.switch.off} />
+    </section>
+
+    <section class="section container" aria-labelledby="recursos-titulo">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal="fade-up">{c.features.eyebrow}</p>
+        <h2 id="recursos-titulo" data-motion-text="words">{c.features.title}</h2>
+      </div>
+      <ul class="features" data-reveal-group>
+        {
+          c.features.items.map((f) => (
+            <li class="feature" data-reveal-item data-tilt>
+              <i class={`ph ${f.icon}`} style="font-size: 22px" aria-hidden="true" />
+              <div>
+                <h3>{f.title}</h3>
+                <p>{f.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="section container" id="faq" aria-labelledby="faq-titulo">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal="fade-up">{c.faq.eyebrow}</p>
+        <h2 id="faq-titulo" data-motion-text="words">{c.faq.title}</h2>
+      </div>
+      <div class="faq-list" data-reveal-group>
+        {
+          c.faq.items.map((f) => (
+            <details data-reveal-item>
+              <summary>
+                {f.q}
+                <i class="ph ph-caret-down chev" aria-hidden="true" />
+              </summary>
+              <p>{f.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="final container" aria-labelledby="final-titulo">
+      <h2 id="final-titulo" class="gradient-text" data-motion-text="words">{c.final.title}</h2>
+      <p data-reveal="fade-up">{c.final.sub}</p>
+      <div class="cta-row" data-reveal="fade-up" data-reveal-delay="0.15">
+        <a class="btn btn-primary" href={DOWNLOAD_URL} rel="noopener" data-magnetic>
+          <i class="ph ph-download-simple" aria-hidden="true"></i>
+          {c.hero.download}
+        </a>
+        <a class="btn btn-ghost" href={GITHUB_URL} rel="noopener" data-magnetic>
+          <i class="ph ph-github-logo" aria-hidden="true"></i>
+          {c.hero.github}
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-row">
+      <span>{c.footer.note}</span>
+      <div class="footer-links">
+        <a href={GITHUB_URL} rel="noopener">GitHub</a>
+        <a href={DOWNLOAD_URL} rel="noopener">{c.footer.releases}</a>
+        <a href="#conteudo">{c.footer.top}</a>
+      </div>
+    </div>
+  </footer>
+
+  <Fireflies slot="overlays" />
+
+  <script>
+    import Lenis from "lenis";
+    import "lenis/dist/lenis.css";
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.defaults({ ease: "power3.out", duration: 0.85 });
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+
+    if (!reduceMotion) {
+      const lenis = new Lenis({
+        lerp: 0.08,
+        smoothWheel: true,
+        wheelMultiplier: 0.9,
+        anchors: true,
+      });
+      lenis.on("scroll", ScrollTrigger.update);
+      gsap.ticker.add((time) => lenis.raf(time * 1000));
+      gsap.ticker.lagSmoothing(0);
+      window.addEventListener("load", () => ScrollTrigger.refresh());
+    }
+
+    // ---------- text reveals ----------
+    function splitWords(element: Element) {
+      const text = element.textContent || "";
+      const parts = text.split(/(\s+)/);
+      element.textContent = "";
+      element.setAttribute("aria-label", text.trim());
+      parts.forEach((part) => {
+        if (!part.trim()) {
+          element.appendChild(document.createTextNode(part));
+          return;
+        }
+        const mask = document.createElement("span");
+        const word = document.createElement("span");
+        mask.className = "motion-word-mask";
+        mask.setAttribute("aria-hidden", "true");
+        word.className = "motion-word";
+        word.textContent = part;
+        mask.appendChild(word);
+        element.appendChild(mask);
+      });
+    }
+
+    function initTextReveals() {
+      if (reduceMotion) {
+        gsap.set("[data-motion-text]", { autoAlpha: 1, clearProps: "all" });
+        return;
+      }
+
+      gsap.utils.toArray("[data-motion-text='words']").forEach((el) => {
+        const element = el as HTMLElement;
+        splitWords(element);
+        gsap.set(element, { autoAlpha: 1 });
+        gsap.fromTo(
+          element.querySelectorAll(".motion-word"),
+          { yPercent: 110, autoAlpha: 0, filter: "blur(8px)" },
+          {
+            yPercent: 0,
+            autoAlpha: 1,
+            filter: "blur(0px)",
+            duration: 0.9,
+            ease: "power4.out",
+            stagger: 0.055,
+            scrollTrigger: { trigger: element, start: "top 82%", once: true },
+          }
+        );
+      });
+
+      gsap.utils.toArray("[data-motion-text='lines']").forEach((el) => {
+        const element = el as HTMLElement;
+        const lines = element.querySelectorAll(".motion-line");
+        gsap.set(element, { autoAlpha: 1 });
+        gsap.fromTo(
+          lines,
+          { yPercent: 110, autoAlpha: 0, filter: "blur(8px)" },
+          {
+            yPercent: 0,
+            autoAlpha: 1,
+            filter: "blur(0px)",
+            duration: 1,
+            ease: "power4.out",
+            stagger: 0.12,
+            delay: 0.15,
+          }
+        );
+      });
+    }
+
+    // ---------- scroll reveals ----------
+    const revealPresets: Record<string, { from: gsap.TweenVars; to: gsap.TweenVars }> = {
+      "fade-up": { from: { y: 32, autoAlpha: 0 }, to: { y: 0, autoAlpha: 1 } },
+      "blur-in": { from: { y: 18, autoAlpha: 0, filter: "blur(10px)" }, to: { y: 0, autoAlpha: 1, filter: "blur(0px)" } },
+    };
+
+    function initScrollReveals() {
+      if (reduceMotion) {
+        gsap.set("[data-reveal], [data-reveal-item]", { autoAlpha: 1, clearProps: "all" });
+        return;
+      }
+
+      gsap.utils.toArray("[data-reveal-group]").forEach((group) => {
+        const items = (group as HTMLElement).querySelectorAll("[data-reveal-item]");
+        gsap.fromTo(
+          items,
+          { y: 36, autoAlpha: 0, filter: "blur(8px)" },
+          {
+            y: 0,
+            autoAlpha: 1,
+            filter: "blur(0px)",
+            duration: 0.95,
+            ease: "power4.out",
+            stagger: 0.08,
+            scrollTrigger: { trigger: group as HTMLElement, start: "top 82%", once: true },
+          }
+        );
+      });
+
+      gsap.utils.toArray("[data-reveal]:not([data-reveal-item])").forEach((el) => {
+        const element = el as HTMLElement;
+        const preset = revealPresets[element.dataset.reveal || "fade-up"] || revealPresets["fade-up"];
+        gsap.fromTo(element, preset.from, {
+          ...preset.to,
+          duration: 0.9,
+          ease: "power4.out",
+          delay: Number(element.dataset.revealDelay || 0),
+          scrollTrigger: { trigger: element, start: "top 88%", once: true },
+        });
+      });
+    }
+
+    // ---------- hero intro ----------
+    function initHeroIntro() {
+      const switchWrap = document.querySelector(".hero-switch");
+      const ambient = document.querySelector(".ambient");
+      if (reduceMotion) {
+        gsap.set([switchWrap, ambient], { autoAlpha: 1, clearProps: "all" });
+        return;
+      }
+      const tl = gsap.timeline({ delay: 0.1 });
+      tl.fromTo(ambient, { autoAlpha: 0, scale: 0.9 }, { autoAlpha: 1, scale: 1, duration: 1.6, ease: "power2.out" }, 0).fromTo(
+        switchWrap,
+        { autoAlpha: 0, y: 26, scale: 0.94 },
+        { autoAlpha: 1, y: 0, scale: 1, duration: 1.1, ease: "power4.out" },
+        0.25
+      );
+    }
+
+    // ---------- mouse parallax (só fundo) ----------
+    function initMouseParallax() {
+      if (reduceMotion || coarsePointer) return;
+      gsap.utils.toArray("[data-mouse-parallax]").forEach((sec) => {
+        const section = sec as HTMLElement;
+        const layers = section.querySelectorAll("[data-mouse-depth]");
+        const setters = Array.from(layers).map((layer) => ({
+          depth: Number((layer as HTMLElement).dataset.mouseDepth || 0.04),
+          xTo: gsap.quickTo(layer, "x", { duration: 0.9, ease: "power3.out" }),
+          yTo: gsap.quickTo(layer, "y", { duration: 0.9, ease: "power3.out" }),
+        }));
+        section.addEventListener("pointermove", (event) => {
+          const rect = section.getBoundingClientRect();
+          const x = event.clientX - rect.left - rect.width / 2;
+          const y = event.clientY - rect.top - rect.height / 2;
+          setters.forEach(({ depth, xTo, yTo }) => {
+            xTo(x * depth);
+            yTo(y * depth);
+          });
+        });
+        section.addEventListener("pointerleave", () => {
+          setters.forEach(({ xTo, yTo }) => {
+            xTo(0);
+            yTo(0);
+          });
+        });
+      });
+    }
+
+    // ---------- scroll parallax (só fundo) ----------
+    function initParallax() {
+      if (reduceMotion) return;
+      gsap.utils.toArray("[data-parallax-layer]").forEach((layer) => {
+        const speed = Number((layer as HTMLElement).dataset.parallaxSpeed || 0.18);
+        const section = layer.closest("[data-parallax-section]") || layer;
+        gsap.to(layer, {
+          y: () => window.innerHeight * speed * -1,
+          ease: "none",
+          scrollTrigger: {
+            trigger: section as Element,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1.2,
+            invalidateOnRefresh: true,
+          },
+        });
+      });
+    }
+
+    // ---------- magnetic buttons ----------
+    function initMagnetic() {
+      if (reduceMotion || coarsePointer) return;
+      gsap.utils.toArray("[data-magnetic]").forEach((el) => {
+        const element = el as HTMLElement;
+        const strength = 0.22;
+        const xTo = gsap.quickTo(element, "x", { duration: 0.45, ease: "power3.out" });
+        const yTo = gsap.quickTo(element, "y", { duration: 0.45, ease: "power3.out" });
+        element.addEventListener("pointermove", (event) => {
+          const rect = element.getBoundingClientRect();
+          xTo((event.clientX - rect.left - rect.width / 2) * strength);
+          yTo((event.clientY - rect.top - rect.height / 2) * strength);
+        });
+        element.addEventListener("pointerleave", () => {
+          xTo(0);
+          yTo(0);
+        });
+      });
+    }
+
+    // ---------- card tilt ----------
+    function initTilt() {
+      if (reduceMotion || coarsePointer) return;
+      gsap.utils.toArray("[data-tilt]").forEach((el) => {
+        const element = el as HTMLElement;
+        const rxTo = gsap.quickTo(element, "rotationX", { duration: 0.5, ease: "power3.out" });
+        const ryTo = gsap.quickTo(element, "rotationY", { duration: 0.5, ease: "power3.out" });
+        gsap.set(element, { transformPerspective: 700 });
+        element.addEventListener("pointermove", (event) => {
+          const rect = element.getBoundingClientRect();
+          const px = (event.clientX - rect.left) / rect.width - 0.5;
+          const py = (event.clientY - rect.top) / rect.height - 0.5;
+          rxTo(py * -4);
+          ryTo(px * 4);
+        });
+        element.addEventListener("pointerleave", () => {
+          rxTo(0);
+          ryTo(0);
+        });
+      });
+    }
+
+    initTextReveals();
+    initScrollReveals();
+    initHeroIntro();
+    initMouseParallax();
+    initParallax();
+    initMagnetic();
+    initTilt();
+    ScrollTrigger.refresh();
+  </script>
+</Base>

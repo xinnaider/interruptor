@@ -1,0 +1,87 @@
+---
+interface Props {
+  labelOn: string;
+  labelOff: string;
+}
+
+const { labelOn, labelOff } = Astro.props;
+---
+
+<div class="hero-switch">
+  <button
+    id="main-switch"
+    class="switch-btn"
+    type="button"
+    aria-pressed="true"
+    aria-label={labelOn}
+    data-label-on={labelOn}
+    data-label-off={labelOff}
+  >
+    <span class="switch-plate" aria-hidden="true"></span>
+    <span class="switch-slot" aria-hidden="true"></span>
+    <span class="switch-rocker" aria-hidden="true"></span>
+    <span class="switch-glow" aria-hidden="true"></span>
+  </button>
+</div>
+
+<script>
+  const root = document.documentElement;
+  const btn = document.getElementById("main-switch") as HTMLButtonElement | null;
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  let light = root.dataset.light !== "off";
+  let targetX = window.innerWidth / 2;
+  let targetY = window.innerHeight * 0.4;
+  let curX = targetX;
+  let curY = targetY;
+  let rafId: number | null = null;
+
+  function paintBeam() {
+    if (!reduceMotion) {
+      curX += (targetX - curX) * 0.14;
+      curY += (targetY - curY) * 0.14;
+    } else {
+      curX = targetX;
+      curY = targetY;
+    }
+    root.style.setProperty("--mx", `${curX.toFixed(1)}px`);
+    root.style.setProperty("--my", `${curY.toFixed(1)}px`);
+    if (!light) rafId = requestAnimationFrame(paintBeam);
+    else rafId = null;
+  }
+
+  function setLight(on: boolean) {
+    light = on;
+    root.dataset.light = on ? "on" : "off";
+    btn?.setAttribute("aria-pressed", String(on));
+    const label = on ? btn?.dataset.labelOn : btn?.dataset.labelOff;
+    if (label) btn?.setAttribute("aria-label", label);
+    try {
+      sessionStorage.setItem("interruptor:light", on ? "on" : "off");
+    } catch {}
+    if (on && !reduceMotion) {
+      // flicker de lâmpada fria ao religar
+      root.classList.remove("flickering");
+      void root.offsetWidth;
+      root.classList.add("flickering");
+      root.addEventListener("animationend", () => root.classList.remove("flickering"), {
+        once: true,
+      });
+    }
+    if (!on && rafId === null) rafId = requestAnimationFrame(paintBeam);
+  }
+
+  btn?.addEventListener("click", () => setLight(!light));
+
+  window.addEventListener(
+    "pointermove",
+    (e) => {
+      targetX = e.clientX;
+      targetY = e.clientY;
+    },
+    { passive: true }
+  );
+
+  if (!light) rafId = requestAnimationFrame(paintBeam);
+</script>

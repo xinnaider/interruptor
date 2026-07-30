@@ -1,0 +1,6 @@
+services:
+  interruptor-landing:
+    image: ghcr.io/xinnaider/interruptor-landing:latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3002:80"
