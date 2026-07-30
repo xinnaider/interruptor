@@ -66,18 +66,27 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
           {c.hero.sub}
         </p>
         <div class="install-block" data-reveal="fade-up" data-reveal-delay="0.28">
-          <pre class="install-cmd"><code id="install-cmd">{INSTALL_CMD}</code></pre>
-          <button type="button" class="btn btn-primary install-copy" data-copy-install data-label={c.install.copy} data-copied={c.install.copied}>
-            <i class="ph ph-copy" aria-hidden="true"></i>
-            <span>{c.install.copy}</span>
-          </button>
-        </div>
-        <p class="hero-github" data-reveal="fade-up" data-reveal-delay="0.34">
-          <a href={GITHUB_URL} rel="noopener noreferrer">{c.hero.github}</a>
-        </p>
-        <div class="proof" data-reveal="fade-up" data-reveal-delay="0.4">
-          <span><i class="ph ph-seal-check" aria-hidden="true"></i> {c.hero.proof1}</span>
-          <span>{c.hero.proof2}</span>
+          <div class="install-row">
+            <pre class="install-cmd"><code id="install-cmd">{INSTALL_CMD}</code></pre>
+            <button
+              type="button"
+              class="btn btn-primary install-copy"
+              data-copy-install
+              data-label={c.install.copy}
+              data-copied={c.install.copied}
+              aria-label={c.install.copy}
+            >
+              <i class="ph ph-copy" aria-hidden="true"></i>
+              <span class="install-copy-label">{c.install.copy}</span>
+            </button>
+          </div>
+          <p class="hero-meta">
+            <a href={GITHUB_URL} rel="noopener noreferrer">{c.hero.github}</a>
+            <span class="meta-sep" aria-hidden="true">·</span>
+            <span><i class="ph ph-seal-check" aria-hidden="true"></i> {c.hero.proof1}</span>
+            <span class="meta-sep" aria-hidden="true">·</span>
+            <span>{c.hero.proof2}</span>
+          </p>
         </div>
       </div>
 
@@ -353,7 +362,7 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
       button.addEventListener("click", async () => {
         try {
           await navigator.clipboard.writeText(cmd);
-          const span = button.querySelector("span");
+          const span = button.querySelector(".install-copy-label");
           if (span) span.textContent = copied;
           setTimeout(() => { if (span) span.textContent = label; }, 2000);
         } catch {}
