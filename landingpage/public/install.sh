@@ -61,31 +61,25 @@ header() {
 
 bar_string() {
   local step=$1
-  local tick=${2:-0}
+  local mode=${2:-done}
   local base=$(( (step - 1) * BAR_WIDTH / TOTAL_STEPS ))
   local cap=$(( step * BAR_WIDTH / TOTAL_STEPS ))
   local span=$(( cap - base ))
-  local filled=$base
   local head=-1
 
-  if (( step > 0 && step <= TOTAL_STEPS && span > 0 )); then
-    filled=$(( base + 1 + tick % span ))
-    (( filled > cap )) && filled=$cap
-    head=$filled
-    if (( filled < cap )); then
-      head=$(( filled + 1 ))
-    fi
-  elif (( step > TOTAL_STEPS )); then
-    filled=$BAR_WIDTH
+  if [[ "$mode" != "done" ]] && (( span > 0 )); then
+    head=$(( base + mode % span ))
   fi
 
   local out="  ${K}[${R}"
   local i
   for ((i = 0; i < BAR_WIDTH; i++)); do
-    if (( i < filled )); then
+    if (( i < base )); then
       out+="${O}█${K}"
-    elif (( i == head && head >= 0 )); then
-      out+="${O}▓${K}"
+    elif [[ "$mode" == "done" ]] && (( i < cap )); then
+      out+="${O}█${K}"
+    elif [[ "$mode" != "done" ]] && (( i == head )); then
+      out+="${O}█${K}"
     else
       out+='░'
     fi
@@ -99,7 +93,7 @@ render_active_line() {
   local label=$2
   local spin=(⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏)
   local s=${spin[$((frame % 10))]}
-  printf '\r  %s %s%-18s%s  %s' "$s" "$B" "$label" "$R" "$(bar_string "$STEP" "$frame")"
+  printf '\r  %s %s%-20s%s  %s' "$s" "$B" "$label" "$R" "$(bar_string "$STEP" "$frame")"
 }
 
 start_line_animation() {
@@ -125,9 +119,9 @@ stop_line_animation() {
   ANIM_PID=""
 
   if (( ok == 0 )); then
-    printf '\r  %s✓%s %-18s  %s\n' "$G" "$R" "$label" "$(bar_string "$STEP" 0)"
+    printf '\r  %s✓%s %-20s  %s\n' "$G" "$R" "$label" "$(bar_string "$STEP" done)"
   else
-    printf '\r  %s✗%s %-18s\n' "$O" "$R" "$label"
+    printf '\r  %s✗%s %-20s\n' "$O" "$R" "$label"
   fi
 }
 
