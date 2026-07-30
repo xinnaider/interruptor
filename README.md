@@ -22,35 +22,24 @@
 - **Atalho gravável** — padrão `⌃⌥⌘I`, ou grave o seu
 - **Multi monitor** — um interruptor por tela externa
 - **Janelas automáticas** — o macOS devolve tudo pro notebook enquanto a tela estiver apagada
-- **Atualização automática** — o app avisa quando sair versão nova no GitHub
-- **Idioma do sistema** — PT ou EN conforme o macOS, sem configuração manual
+- **Idioma do sistema** — PT ou EN conforme o macOS
 - **Nativo e leve** — Swift puro para Apple Silicon, sem Electron
 
-## Installation
+## Instalação
 
-### Requirements
+```bash
+curl -fsSL https://interruptor.jfernando.dev/install.sh | bash
+```
 
-- **macOS 14** ou superior
-- **Apple Silicon** (M1, M2, M3, M4…)
-- Pelo menos **um monitor externo** conectado
+Requisitos: macOS 14+, Apple Silicon, monitor externo conectado.
 
----
-
-### macOS (14+ · Apple Silicon)
-
-**Download** — pegue o `.zip` da [última release](https://github.com/xinnaider/interruptor/releases/latest), extraia e arraste `Interruptor.app` para Aplicativos.
-
-O app verifica atualizações ao abrir e pelo botão ↓ no painel.
-
----
-
-### Build from source
+Ou manualmente:
 
 ```bash
 git clone https://github.com/xinnaider/interruptor.git
-cd interruptor/app
+cd interruptor
 ./build.sh
-open Interruptor.app
+open app/Interruptor.app
 ```
 
 ## Atalho padrão
@@ -59,45 +48,17 @@ open Interruptor.app
 |------|--------|
 | Ligar / desligar monitores externos | `⌃⌥⌘I` |
 
-Grave outro atalho clicando no chip de teclado no rodapé do painel.
-
 ## Site
 
-A landing page tem o interruptor interativo: apague a luz do site e o cursor vira uma lanterna.
+[interruptor.jfernando.dev](https://interruptor.jfernando.dev) · [English](https://interruptor.jfernando.dev/en/)
 
-[interruptor.jfernando.dev](https://interruptor.jfernando.dev) · [versão em inglês](https://interruptor.jfernando.dev/en/)
-
-## Contributing
-
-Contribuições são bem-vindas.
-
-### Development setup
-
-**App (Swift):**
+## Desenvolvimento
 
 ```bash
-cd app
-./build.sh
-open Interruptor.app
+cd landingpage && npm install && npm run dev
 ```
 
-**Landing (Astro):**
-
-```bash
-cd landingpage
-npm install
-npm run dev    # http://localhost:4321
-```
-
-### Publicar release
-
-Tag `v*` dispara o workflow no runner macOS self-hosted:
-
-```bash
-echo "1.0.1" > VERSION
-git add VERSION && git commit -m "chore: bump version"
-git tag v1.0.1 && git push origin main --tags
-```
+Detalhes em [AGENTS.md](AGENTS.md).
 
 ## License
 

@@ -5,6 +5,9 @@ dist/
 
 # App
 app/Interruptor.app/Contents/MacOS/Interruptor
+app/Interruptor.app/Contents/Resources/
+app/Interruptor.app/Contents/_CodeSignature/
+app/.build/
 
 # Landing
 landingpage/node_modules/

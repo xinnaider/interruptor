@@ -1,2 +1,3 @@
+export const SITE_URL = "https://interruptor.jfernando.dev";
 export const GITHUB_URL = "https://github.com/xinnaider/interruptor";
-export const DOWNLOAD_URL = `${GITHUB_URL}/releases/latest`;
+export const INSTALL_CMD = `curl -fsSL ${SITE_URL}/install.sh | bash`;

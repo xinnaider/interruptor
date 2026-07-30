@@ -2,7 +2,7 @@
 import Base from "../layouts/Base.astro";
 import HeroSwitch from "./HeroSwitch.astro";
 import Fireflies from "./Fireflies.astro";
-import { GITHUB_URL, DOWNLOAD_URL } from "../consts";
+import { GITHUB_URL, INSTALL_CMD } from "../consts";
 import { copy, type Lang } from "../i18n";
 
 interface Props {
@@ -22,8 +22,9 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
         Interruptor
       </a>
       <div class="nav-links">
+        <a href="#instalar">{c.install.eyebrow}</a>
         <a href="#faq">{c.faq.eyebrow}</a>
-        <a href={GITHUB_URL} rel="noopener">GitHub</a>
+        <a href={GITHUB_URL} rel="noopener noreferrer">GitHub</a>
         <span class="lang-divider" aria-hidden="true"></span>
         <a
           href="/"
@@ -48,6 +49,12 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
       </div>
 
       <div class="hero-copy">
+        <p class="platform-badge" data-reveal="fade-up">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.63 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
+          </svg>
+          {c.hero.badge}
+        </p>
         <h1 class="gradient-text" data-motion-text="lines">
           <span class="motion-line-mask"
             ><span class="motion-line">{c.hero.line1}</span></span
@@ -56,26 +63,41 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
             ><span class="motion-line">{c.hero.line2}</span></span
           >
         </h1>
-        <p class="sub" data-reveal="fade-up" data-reveal-delay="0.35">
+        <p class="sub" data-reveal="fade-up" data-reveal-delay="0.2">
           {c.hero.sub}
         </p>
-        <div class="cta-row" data-reveal="fade-up" data-reveal-delay="0.5">
-          <a class="btn btn-primary" href={DOWNLOAD_URL} rel="noopener" data-magnetic>
-            <i class="ph ph-download-simple" aria-hidden="true"></i>
+        <div class="cta-row" data-reveal="fade-up" data-reveal-delay="0.28">
+          <a class="btn btn-primary" href="#instalar">
+            <i class="ph ph-terminal-window" aria-hidden="true"></i>
             {c.hero.download}
           </a>
-          <a class="btn btn-ghost" href={GITHUB_URL} rel="noopener" data-magnetic>
+          <a class="btn btn-secondary" href={GITHUB_URL} rel="noopener noreferrer">
             <i class="ph ph-github-logo" aria-hidden="true"></i>
             {c.hero.github}
           </a>
         </div>
-        <div class="proof" data-reveal="fade-up" data-reveal-delay="0.65">
+        <div class="proof" data-reveal="fade-up" data-reveal-delay="0.36">
           <span><i class="ph ph-seal-check" aria-hidden="true"></i> {c.hero.proof1}</span>
           <span>{c.hero.proof2}</span>
         </div>
       </div>
 
       <HeroSwitch labelOn={c.switch.on} labelOff={c.switch.off} />
+    </section>
+
+    <section class="section container install" id="instalar" aria-labelledby="instalar-titulo">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal="fade-up">{c.install.eyebrow}</p>
+        <h2 id="instalar-titulo" data-motion-text="words">{c.install.title}</h2>
+        <p class="install-sub" data-reveal="fade-up">{c.install.sub}</p>
+      </div>
+      <div class="install-block" data-reveal="fade-up" data-reveal-delay="0.1">
+        <pre class="install-cmd"><code id="install-cmd">{INSTALL_CMD}</code></pre>
+        <button type="button" class="btn btn-primary install-copy" data-copy-install data-label={c.install.copy} data-copied={c.install.copied}>
+          <i class="ph ph-copy" aria-hidden="true"></i>
+          <span>{c.install.copy}</span>
+        </button>
+      </div>
     </section>
 
     <section class="section container" aria-labelledby="recursos-titulo">
@@ -86,8 +108,10 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
       <ul class="features" data-reveal-group>
         {
           c.features.items.map((f) => (
-            <li class="feature" data-reveal-item data-tilt>
-              <i class={`ph ${f.icon}`} style="font-size: 22px" aria-hidden="true" />
+            <li class="feature" data-reveal-item>
+              <div class="feature-icon" aria-hidden="true">
+                <i class={`ph ${f.icon}`} style="font-size: 18px"></i>
+              </div>
               <div>
                 <h3>{f.title}</h3>
                 <p>{f.body}</p>
@@ -122,11 +146,11 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
       <h2 id="final-titulo" class="gradient-text" data-motion-text="words">{c.final.title}</h2>
       <p data-reveal="fade-up">{c.final.sub}</p>
       <div class="cta-row" data-reveal="fade-up" data-reveal-delay="0.15">
-        <a class="btn btn-primary" href={DOWNLOAD_URL} rel="noopener" data-magnetic>
-          <i class="ph ph-download-simple" aria-hidden="true"></i>
+        <a class="btn btn-primary" href="#instalar">
+          <i class="ph ph-terminal-window" aria-hidden="true"></i>
           {c.hero.download}
         </a>
-        <a class="btn btn-ghost" href={GITHUB_URL} rel="noopener" data-magnetic>
+        <a class="btn btn-secondary" href={GITHUB_URL} rel="noopener noreferrer">
           <i class="ph ph-github-logo" aria-hidden="true"></i>
           {c.hero.github}
         </a>
@@ -138,8 +162,8 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
     <div class="container footer-row">
       <span>{c.footer.note}</span>
       <div class="footer-links">
-        <a href={GITHUB_URL} rel="noopener">GitHub</a>
-        <a href={DOWNLOAD_URL} rel="noopener">{c.footer.releases}</a>
+        <a href={GITHUB_URL} rel="noopener noreferrer">GitHub</a>
+        <a href="#instalar">{c.footer.install}</a>
         <a href="#conteudo">{c.footer.top}</a>
       </div>
     </div>
@@ -154,16 +178,16 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
     import { ScrollTrigger } from "gsap/ScrollTrigger";
 
     gsap.registerPlugin(ScrollTrigger);
-    gsap.defaults({ ease: "power3.out", duration: 0.85 });
+    gsap.defaults({ ease: "power2.out", duration: 0.28 });
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
     if (!reduceMotion) {
       const lenis = new Lenis({
-        lerp: 0.08,
+        lerp: 0.1,
         smoothWheel: true,
-        wheelMultiplier: 0.9,
+        wheelMultiplier: 0.85,
         anchors: true,
       });
       lenis.on("scroll", ScrollTrigger.update);
@@ -172,7 +196,6 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
       window.addEventListener("load", () => ScrollTrigger.refresh());
     }
 
-    // ---------- text reveals ----------
     function splitWords(element: Element) {
       const text = element.textContent || "";
       const parts = text.split(/(\s+)/);
@@ -206,15 +229,13 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
         gsap.set(element, { autoAlpha: 1 });
         gsap.fromTo(
           element.querySelectorAll(".motion-word"),
-          { yPercent: 110, autoAlpha: 0, filter: "blur(8px)" },
+          { yPercent: 100, autoAlpha: 0 },
           {
             yPercent: 0,
             autoAlpha: 1,
-            filter: "blur(0px)",
-            duration: 0.9,
-            ease: "power4.out",
-            stagger: 0.055,
-            scrollTrigger: { trigger: element, start: "top 82%", once: true },
+            duration: 0.45,
+            stagger: 0.04,
+            scrollTrigger: { trigger: element, start: "top 85%", once: true },
           }
         );
       });
@@ -225,25 +246,17 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
         gsap.set(element, { autoAlpha: 1 });
         gsap.fromTo(
           lines,
-          { yPercent: 110, autoAlpha: 0, filter: "blur(8px)" },
+          { yPercent: 100, autoAlpha: 0 },
           {
             yPercent: 0,
             autoAlpha: 1,
-            filter: "blur(0px)",
-            duration: 1,
-            ease: "power4.out",
-            stagger: 0.12,
-            delay: 0.15,
+            duration: 0.5,
+            stagger: 0.08,
+            delay: 0.08,
           }
         );
       });
     }
-
-    // ---------- scroll reveals ----------
-    const revealPresets: Record<string, { from: gsap.TweenVars; to: gsap.TweenVars }> = {
-      "fade-up": { from: { y: 32, autoAlpha: 0 }, to: { y: 0, autoAlpha: 1 } },
-      "blur-in": { from: { y: 18, autoAlpha: 0, filter: "blur(10px)" }, to: { y: 0, autoAlpha: 1, filter: "blur(0px)" } },
-    };
 
     function initScrollReveals() {
       if (reduceMotion) {
@@ -255,33 +268,35 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
         const items = (group as HTMLElement).querySelectorAll("[data-reveal-item]");
         gsap.fromTo(
           items,
-          { y: 36, autoAlpha: 0, filter: "blur(8px)" },
+          { y: 16, autoAlpha: 0, scale: 0.96 },
           {
             y: 0,
             autoAlpha: 1,
-            filter: "blur(0px)",
-            duration: 0.95,
-            ease: "power4.out",
-            stagger: 0.08,
-            scrollTrigger: { trigger: group as HTMLElement, start: "top 82%", once: true },
+            scale: 1,
+            duration: 0.4,
+            stagger: 0.06,
+            scrollTrigger: { trigger: group as HTMLElement, start: "top 85%", once: true },
           }
         );
       });
 
       gsap.utils.toArray("[data-reveal]:not([data-reveal-item])").forEach((el) => {
         const element = el as HTMLElement;
-        const preset = revealPresets[element.dataset.reveal || "fade-up"] || revealPresets["fade-up"];
-        gsap.fromTo(element, preset.from, {
-          ...preset.to,
-          duration: 0.9,
-          ease: "power4.out",
-          delay: Number(element.dataset.revealDelay || 0),
-          scrollTrigger: { trigger: element, start: "top 88%", once: true },
-        });
+        gsap.fromTo(
+          element,
+          { y: 12, autoAlpha: 0, scale: 0.96 },
+          {
+            y: 0,
+            autoAlpha: 1,
+            scale: 1,
+            duration: 0.35,
+            delay: Number(element.dataset.revealDelay || 0),
+            scrollTrigger: { trigger: element, start: "top 90%", once: true },
+          }
+        );
       });
     }
 
-    // ---------- hero intro ----------
     function initHeroIntro() {
       const switchWrap = document.querySelector(".hero-switch");
       const ambient = document.querySelector(".ambient");
@@ -289,25 +304,26 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
         gsap.set([switchWrap, ambient], { autoAlpha: 1, clearProps: "all" });
         return;
       }
-      const tl = gsap.timeline({ delay: 0.1 });
-      tl.fromTo(ambient, { autoAlpha: 0, scale: 0.9 }, { autoAlpha: 1, scale: 1, duration: 1.6, ease: "power2.out" }, 0).fromTo(
-        switchWrap,
-        { autoAlpha: 0, y: 26, scale: 0.94 },
-        { autoAlpha: 1, y: 0, scale: 1, duration: 1.1, ease: "power4.out" },
-        0.25
-      );
+      gsap
+        .timeline({ delay: 0.05 })
+        .fromTo(ambient, { autoAlpha: 0, scale: 0.96 }, { autoAlpha: 1, scale: 1, duration: 0.6 }, 0)
+        .fromTo(
+          switchWrap,
+          { autoAlpha: 0, y: 12, scale: 0.96 },
+          { autoAlpha: 1, y: 0, scale: 1, duration: 0.5 },
+          0.12
+        );
     }
 
-    // ---------- mouse parallax (só fundo) ----------
     function initMouseParallax() {
-      if (reduceMotion || coarsePointer) return;
+      if (reduceMotion || !finePointer) return;
       gsap.utils.toArray("[data-mouse-parallax]").forEach((sec) => {
         const section = sec as HTMLElement;
         const layers = section.querySelectorAll("[data-mouse-depth]");
         const setters = Array.from(layers).map((layer) => ({
           depth: Number((layer as HTMLElement).dataset.mouseDepth || 0.04),
-          xTo: gsap.quickTo(layer, "x", { duration: 0.9, ease: "power3.out" }),
-          yTo: gsap.quickTo(layer, "y", { duration: 0.9, ease: "power3.out" }),
+          xTo: gsap.quickTo(layer, "x", { duration: 0.6, ease: "power2.out" }),
+          yTo: gsap.quickTo(layer, "y", { duration: 0.6, ease: "power2.out" }),
         }));
         section.addEventListener("pointermove", (event) => {
           const rect = section.getBoundingClientRect();
@@ -327,7 +343,6 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
       });
     }
 
-    // ---------- scroll parallax (só fundo) ----------
     function initParallax() {
       if (reduceMotion) return;
       gsap.utils.toArray("[data-parallax-layer]").forEach((layer) => {
@@ -340,51 +355,9 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
             trigger: section as Element,
             start: "top bottom",
             end: "bottom top",
-            scrub: 1.2,
+            scrub: 1,
             invalidateOnRefresh: true,
           },
-        });
-      });
-    }
-
-    // ---------- magnetic buttons ----------
-    function initMagnetic() {
-      if (reduceMotion || coarsePointer) return;
-      gsap.utils.toArray("[data-magnetic]").forEach((el) => {
-        const element = el as HTMLElement;
-        const strength = 0.22;
-        const xTo = gsap.quickTo(element, "x", { duration: 0.45, ease: "power3.out" });
-        const yTo = gsap.quickTo(element, "y", { duration: 0.45, ease: "power3.out" });
-        element.addEventListener("pointermove", (event) => {
-          const rect = element.getBoundingClientRect();
-          xTo((event.clientX - rect.left - rect.width / 2) * strength);
-          yTo((event.clientY - rect.top - rect.height / 2) * strength);
-        });
-        element.addEventListener("pointerleave", () => {
-          xTo(0);
-          yTo(0);
-        });
-      });
-    }
-
-    // ---------- card tilt ----------
-    function initTilt() {
-      if (reduceMotion || coarsePointer) return;
-      gsap.utils.toArray("[data-tilt]").forEach((el) => {
-        const element = el as HTMLElement;
-        const rxTo = gsap.quickTo(element, "rotationX", { duration: 0.5, ease: "power3.out" });
-        const ryTo = gsap.quickTo(element, "rotationY", { duration: 0.5, ease: "power3.out" });
-        gsap.set(element, { transformPerspective: 700 });
-        element.addEventListener("pointermove", (event) => {
-          const rect = element.getBoundingClientRect();
-          const px = (event.clientX - rect.left) / rect.width - 0.5;
-          const py = (event.clientY - rect.top) / rect.height - 0.5;
-          rxTo(py * -4);
-          ryTo(px * 4);
-        });
-        element.addEventListener("pointerleave", () => {
-          rxTo(0);
-          ryTo(0);
         });
       });
     }
@@ -394,8 +367,21 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
     initHeroIntro();
     initMouseParallax();
     initParallax();
-    initMagnetic();
-    initTilt();
     ScrollTrigger.refresh();
+
+    document.querySelectorAll("[data-copy-install]").forEach((btn) => {
+      const button = btn as HTMLButtonElement;
+      const cmd = document.getElementById("install-cmd")?.textContent || "";
+      const label = button.dataset.label || "";
+      const copied = button.dataset.copied || "";
+      button.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(cmd);
+          const span = button.querySelector("span");
+          if (span) span.textContent = copied;
+          setTimeout(() => { if (span) span.textContent = label; }, 2000);
+        } catch {}
+      });
+    });
   </script>
 </Base>

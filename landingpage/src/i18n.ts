@@ -8,13 +8,21 @@ export const copy = {
       "App de barra de menus para macOS que desliga o monitor externo com um clique ou atalho, sem tirar o cabo. Grátis e open source.",
     skipLink: "Pular para o conteúdo",
     hero: {
+      badge: "Exclusivo para Mac",
       line1: "Desligue o seu monitor externo.",
       line2: "Sem puxar cabo nenhum.",
-      sub: "Quer desconectar um monitor sem tirar o cabo? O Interruptor fica na barra de menus do Mac e apaga a tela externa num clique ou atalho. As janelas voltam sozinhas.",
-      download: "Baixar para macOS",
+      sub: "Interruptor vive na barra de menus do macOS. Um clique ou atalho apaga a tela externa e as janelas voltam para o Mac. Só Apple Silicon.",
+      download: "Instalar no Mac",
       github: "Ver no GitHub",
       proof1: "Grátis e open source",
       proof2: "Apple Silicon · macOS 14 ou superior · MIT",
+    },
+    install: {
+      eyebrow: "Instalação",
+      title: "Um comando no Terminal.",
+      sub: "Cole, aperte Enter e o Interruptor abre.",
+      copy: "Copiar",
+      copied: "Copiado!",
     },
     features: {
       eyebrow: "Detalhes",
@@ -67,18 +75,22 @@ export const copy = {
           a: "Um Mac com Apple Silicon rodando macOS 14 ou superior, e ao menos um monitor externo conectado.",
         },
         {
+          q: "Como instalo?",
+          a: "Cole o comando da seção Instalação no Terminal e aperte Enter.",
+        },
+        {
           q: "É grátis?",
-          a: "Sim, para sempre. O código é aberto sob licença MIT e você pode compilar o app por conta própria se preferir.",
+          a: "Sim, para sempre. Licença MIT.",
         },
       ],
     },
     final: {
       title: "Apague a luz. Leve o interruptor",
-      sub: "Download grátis para macOS. Se o app poupar seus cabos, deixe uma estrela no GitHub.",
+      sub: "Cole o comando no Terminal e pronto.",
     },
     footer: {
       note: "Interruptor · licença MIT · feito em Swift",
-      releases: "Releases",
+      install: "Instalar",
       top: "Voltar ao topo",
     },
     switch: {
@@ -95,13 +107,21 @@ export const copy = {
       "A menu bar app for macOS that turns off your external display with one click or shortcut, no cable pulling. Free and open source.",
     skipLink: "Skip to content",
     hero: {
+      badge: "Mac only",
       line1: "Turn off your external display.",
       line2: "Without unplugging a single cable.",
-      sub: "Want to disconnect a monitor without pulling the cable? Interruptor lives in your Mac's menu bar and turns the external display off with one click or shortcut. Your windows move back on their own.",
-      download: "Download for macOS",
+      sub: "Interruptor lives in your Mac menu bar. One click or shortcut turns off the external display and windows return to your Mac. Apple Silicon only.",
+      download: "Install on Mac",
       github: "View on GitHub",
       proof1: "Free and open source",
       proof2: "Apple Silicon · macOS 14 or later · MIT",
+    },
+    install: {
+      eyebrow: "Installation",
+      title: "One Terminal command.",
+      sub: "Paste, press Enter, and Interruptor opens.",
+      copy: "Copy",
+      copied: "Copied!",
     },
     features: {
       eyebrow: "Details",
@@ -154,18 +174,22 @@ export const copy = {
           a: "A Mac with Apple Silicon running macOS 14 or later, and at least one external display connected.",
         },
         {
+          q: "How do I install?",
+          a: "Paste the command from the Installation section in Terminal and press Enter.",
+        },
+        {
           q: "Is it free?",
-          a: "Yes, forever. The code is open under the MIT license and you can build the app yourself if you prefer.",
+          a: "Yes, forever. MIT license.",
         },
       ],
     },
     final: {
       title: "Lights out. Take the switch",
-      sub: "Free download for macOS. If the app saves your cables, leave a star on GitHub.",
+      sub: "Paste the command in Terminal and you're set.",
     },
     footer: {
       note: "Interruptor · MIT license · built in Swift",
-      releases: "Releases",
+      install: "Install",
       top: "Back to top",
     },
     switch: {

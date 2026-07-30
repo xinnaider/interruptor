@@ -15,7 +15,6 @@ struct InterruptorApp: App {
         .onAppear {
             hotKey.onToggle = { [store] in store.toggleAll() }
             hotKey.apply(shortcuts.shortcut)
-            Task { await Updater.promptIfNeeded(silent: true) }
         }
         } label: {
             Image(systemName: store.menuBarSymbol)
@@ -122,17 +121,6 @@ struct InterruptorPanel: View {
                 .help("Resetar atalho")
             }
             Spacer(minLength: 4)
-            Button {
-                Task { await Updater.promptIfNeeded(silent: false) }
-            } label: {
-                Image(systemName: "arrow.down.circle")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(.secondary)
-                    .frame(width: 24, height: 24)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .help(String(localized: "update.check", defaultValue: "Verificar atualização"))
             Button { NSApp.terminate(nil) } label: {
                 Image(systemName: "power")
                     .font(.system(size: 12, weight: .semibold))

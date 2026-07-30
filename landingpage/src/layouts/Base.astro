@@ -1,10 +1,4 @@
 ---
-import "@fontsource/geist-sans/400.css";
-import "@fontsource/geist-sans/500.css";
-import "@fontsource/geist-sans/600.css";
-import "@fontsource/geist-mono/400.css";
-import "@fontsource/geist-mono/600.css";
-import "@fontsource-variable/fraunces";
 import "@phosphor-icons/web/regular/style.css";
 import "../styles/global.css";
 
@@ -16,7 +10,7 @@ interface Props {
 }
 
 const { title, description, lang = "pt-BR", skipLink = "Pular para o conteúdo" } = Astro.props;
-const base = Astro.site ?? "https://interruptor.app";
+const base = Astro.site ?? "https://interruptor.jfernando.dev";
 const canonical = new URL(Astro.url.pathname, base);
 const altPath = lang === "pt-BR" ? "/en/" : "/";
 ---
@@ -25,6 +19,8 @@ const altPath = lang === "pt-BR" ? "/en/" : "/";
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="color-scheme" content="light dark" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
@@ -38,7 +34,6 @@ const altPath = lang === "pt-BR" ? "/en/" : "/";
     <meta property="og:locale" content={lang === "pt-BR" ? "pt_BR" : "en_US"} />
     <meta name="twitter:card" content="summary" />
     <script is:inline>
-      // Evita flash: restaura estado antes de pintar.
       try {
         const saved = sessionStorage.getItem("interruptor:light");
         if (saved === "off") document.documentElement.dataset.light = "off";
