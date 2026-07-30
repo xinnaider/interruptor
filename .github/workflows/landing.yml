@@ -19,7 +19,7 @@ jobs:
   check:
     name: Build landing
     if: github.event_name == 'pull_request'
-    runs-on: self-hosted
+    runs-on: [self-hosted, Linux]
     steps:
       - uses: actions/checkout@v4
 
@@ -38,7 +38,7 @@ jobs:
   deploy:
     name: Build & deploy interruptor.jfernando.dev
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-    runs-on: self-hosted
+    runs-on: [self-hosted, Linux]
     steps:
       - name: Sync repo & restart stack
         run: |
