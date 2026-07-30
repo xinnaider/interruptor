@@ -640,13 +640,13 @@ html.has-motion .ambient {
     gap: var(--sp-500);
     padding-top: calc(var(--sp-700) + var(--sp-300));
     padding-bottom: var(--sp-700);
-    text-align: left;
+    text-align: center;
   }
 
   .hero-copy {
-    max-width: none;
+    max-width: 24rem;
     width: 100%;
-    margin-inline: 0;
+    margin-inline: auto;
   }
 
   .hero-switch {
@@ -659,9 +659,17 @@ html.has-motion .ambient {
     background: radial-gradient(55% 45% at 50% 18%, var(--warm-soft), transparent 72%);
   }
 
-  .install-block { max-width: none; }
+  .install-block {
+    max-width: 100%;
+    margin-inline: auto;
+  }
+
+  .install-cmd {
+    text-align: left;
+  }
 
   .hero-meta {
+    justify-content: center;
     gap: var(--sp-50) var(--sp-75);
   }
 
