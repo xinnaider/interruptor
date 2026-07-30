@@ -409,27 +409,23 @@ a { color: inherit; }
 .install-block {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-100);
+  gap: var(--sp-200);
   width: 100%;
 }
 
-.install-row {
-  display: flex;
-  align-items: stretch;
+.install-field {
+  position: relative;
   width: 100%;
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
   background: var(--bg-sunken);
-  overflow: hidden;
 }
 
 .install-cmd {
-  flex: 1;
-  min-width: 0;
   margin: 0;
-  padding: var(--sp-100) var(--sp-200);
+  padding: var(--sp-100) calc(44px + var(--sp-100)) var(--sp-100) var(--sp-200);
   border: 0;
-  border-radius: 0;
+  border-radius: inherit;
   background: transparent;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -446,37 +442,74 @@ a { color: inherit; }
 }
 
 .install-copy {
-  flex: none;
-  align-self: stretch;
-  min-height: 44px;
-  padding-inline: var(--sp-200);
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
   border: 0;
   border-left: 1px solid var(--line);
-  border-radius: 0;
-  white-space: nowrap;
+  border-radius: 0 var(--r-lg) var(--r-lg) 0;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: color 160ms var(--ease-out), background-color 160ms var(--ease-out);
 }
 
-.hero-meta {
-  display: flex;
-  flex-wrap: wrap;
+.install-copy i { font-size: 1.125rem; }
+
+@media (hover: hover) and (pointer: fine) {
+  .install-copy:hover {
+    color: var(--ink);
+    background: var(--bg-elevated);
+  }
+}
+
+.install-copy:active { transform: scale(0.94); }
+
+.hero-github-link {
+  display: inline-flex;
   align-items: center;
-  gap: var(--sp-50) var(--sp-100);
-  margin: 0;
+  justify-content: center;
+  gap: var(--sp-75);
+  width: fit-content;
+  padding: var(--sp-100) var(--sp-200);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--bg-elevated);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--accent);
+  text-decoration: none;
+  transition: background-color 160ms var(--ease-out), border-color 160ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hero-github-link:hover {
+    background: var(--bg-sunken);
+    border-color: color-mix(in srgb, var(--accent) 25%, var(--line));
+  }
+}
+
+.hero-proof {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-50);
   font-size: var(--text-sm);
   color: var(--ink-3);
   line-height: 1.4;
 }
 
-.hero-meta a {
-  color: var(--accent);
-  text-decoration: none;
+.hero-proof-line {
+  display: block;
+  white-space: nowrap;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .hero-meta a:hover { text-decoration: underline; }
-}
-
-.meta-sep { user-select: none; }
+.hero-proof-line i { margin-right: var(--sp-50); }
 
 /* sections */
 .section { padding-block: var(--sp-800); }
@@ -668,10 +701,19 @@ html.has-motion .ambient {
     text-align: left;
   }
 
-  .hero-meta {
-    justify-content: center;
-    gap: var(--sp-50) var(--sp-75);
+  .hero-github-link {
+    margin-inline: auto;
   }
+
+  .hero-proof {
+    align-items: center;
+    text-align: center;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .hero-proof::-webkit-scrollbar { display: none; }
 
   .features { grid-template-columns: 1fr; }
   .section { padding-block: var(--sp-600); }
@@ -718,14 +760,12 @@ html.has-motion .ambient {
 
   .install-cmd {
     font-size: 0.75rem;
-    padding: var(--sp-100) var(--sp-100);
+    padding: var(--sp-100) calc(40px + var(--sp-75)) var(--sp-100) var(--sp-100);
   }
 
-  .install-copy {
-    padding-inline: var(--sp-150);
-  }
+  .install-copy { width: 40px; }
 
-  .install-copy-label { display: none; }
+  .hero-proof-line { font-size: 0.8125rem; }
 
   .switch-btn {
     width: 116px;
