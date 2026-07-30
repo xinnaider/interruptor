@@ -31,11 +31,11 @@ die() {
 
 header() {
   printf '\n'
-  printf '  %s╭────────────╮%s\n' "$O" "$R"
-  printf '  %s│%s ┌────────┐ %s│%s\n' "$O" "$R" "$O" "$R"
-  printf '  %s│%s │ %s▐%s%s▌%s    │ %s│%s\n' "$O" "$R" "$B" "$R" "$B" "$R" "$O" "$R"
-  printf '  %s│%s └────────┘ %s│%s\n' "$O" "$R" "$O" "$R"
-  printf '  %s╰────────────╯%s\n' "$O" "$R"
+  printf '  %s╭──────────────╮%s\n' "$O" "$R"
+  printf '  %s│%s  ┌────────┐   %s│%s\n' "$O" "$R" "$O" "$R"
+  printf '  %s│%s  │ %s║%s      │   %s│%s\n' "$O" "$R" "$B" "$R" "$O" "$R"
+  printf '  %s│%s  └────────┘   %s│%s\n' "$O" "$R" "$O" "$R"
+  printf '  %s╰──────────────╯%s\n' "$O" "$R"
   printf '\n  %sInterruptor%s\n' "$B" "$R"
   printf '  %sDesligue o monitor sem puxar o cabo.%s\n\n' "$D" "$R"
 }
@@ -115,5 +115,5 @@ run_step "Instalando" bash -c '
   [[ -x "'"$LSREGISTER"'" ]] && "'"$LSREGISTER"'" -f "'"$DEST_APP"'" || true
 '
 
-printf '  %sPronto.%s Interruptor está em Aplicativos.\n\n' "$B" "$R"
-open -a "$DEST_APP"
+printf '  %sPronto.%s Clique no ícone na barra de menus.\n\n' "$B" "$R"
+open -g -a "$DEST_APP" 2>/dev/null || true

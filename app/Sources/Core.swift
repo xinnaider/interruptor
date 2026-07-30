@@ -110,7 +110,11 @@ final class DisplayStore {
     private var disabledKeys: Set<String>
 
     var menuBarSymbol: String {
-        displays.contains(where: \.isActive) ? "lightswitch.on" : "lightswitch.off"
+        let on = displays.contains(where: \.isActive)
+        if #available(macOS 15.0, *) {
+            return on ? "lightswitch.on" : "lightswitch.off"
+        }
+        return on ? "display" : "display.trianglebadge.exclamationmark"
     }
 
     init() {

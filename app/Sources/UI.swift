@@ -7,15 +7,19 @@ struct InterruptorApp: App {
     @State private var shortcuts = ShortcutStore()
     @State private var hotKey = HotKeyController()
 
+    init() {
+        NSApp.setActivationPolicy(.accessory)
+    }
+
     var body: some Scene {
         MenuBarExtra {
             InterruptorPanel(store: store, shortcuts: shortcuts) {
                 hotKey.apply(shortcuts.shortcut)
             }
-        .onAppear {
-            hotKey.onToggle = { [store] in store.toggleAll() }
-            hotKey.apply(shortcuts.shortcut)
-        }
+            .onAppear {
+                hotKey.onToggle = { [store] in store.toggleAll() }
+                hotKey.apply(shortcuts.shortcut)
+            }
         } label: {
             Image(systemName: store.menuBarSymbol)
                 .symbolRenderingMode(.hierarchical)
@@ -151,16 +155,12 @@ struct InterruptorPanel: View {
 
     @ViewBuilder
     private var panelBG: some View {
-        if #available(macOS 26, *) {
-            Color.clear.glassEffect(.regular.tint(.black.opacity(0.4)), in: .rect(cornerRadius: 12))
-        } else {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(.ultraThinMaterial)
-                .overlay {
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .fill(Color.black.opacity(0.5))
-                }
-        }
+        RoundedRectangle(cornerRadius: 12, style: .continuous)
+            .fill(.ultraThinMaterial)
+            .overlay {
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(Color.black.opacity(0.45))
+            }
     }
 }
 
