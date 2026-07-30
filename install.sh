@@ -3,34 +3,32 @@ set -euo pipefail
 
 REPO="${INTERRUPTOR_REPO:-https://github.com/xinnaider/interruptor.git}"
 DIR="${INTERRUPTOR_DIR:-$HOME/.local/src/interruptor}"
-APP="$DIR/app/Interruptor.app"
+SRC_APP="$DIR/app/Interruptor.app"
+DEST_APP="/Applications/Interruptor.app"
+LSREGISTER="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister"
 
-bold() { printf '\033[1m%s\033[0m\n' "$*"; }
-die() { printf '✗ %s\n' "$*" >&2; exit 1; }
+die() { printf '\n%s\n' "$1" >&2; exit 1; }
 
-[[ "$(uname)" == "Darwin" ]] || die "Interruptor só roda no macOS."
-[[ "$(uname -m)" == "arm64" ]] || die "Interruptor só roda em Apple Silicon."
+[[ "$(uname)" == "Darwin" ]] || die "Interruptor: só macOS."
+[[ "$(uname -m)" == "arm64" ]] || die "Interruptor: só Apple Silicon."
+command -v git >/dev/null || die "Interruptor: git não encontrado."
+command -v swiftc >/dev/null || die "Interruptor: instale Xcode Command Line Tools."
 
-command -v git >/dev/null || die "git não encontrado."
-command -v swiftc >/dev/null || die "Xcode Command Line Tools necessários: xcode-select --install"
-
-bold "Interruptor — instalando…"
+printf 'Interruptor…'
 
 if [[ ! -d "$DIR/.git" ]]; then
   mkdir -p "$(dirname "$DIR")"
-  git clone "$REPO" "$DIR"
+  git clone --quiet --depth 1 "$REPO" "$DIR" 2>/dev/null || die "Interruptor: não foi possível baixar."
 else
-  git -C "$DIR" pull --ff-only
+  git -C "$DIR" pull --quiet --ff-only 2>/dev/null || true
 fi
 
-"$DIR/build.sh"
-[[ -d "$APP" ]] || die "Build falhou: $APP não encontrado."
+INTERRUPTOR_QUIET=1 "$DIR/build.sh" >/dev/null 2>&1 || die "Interruptor: não foi possível compilar."
+[[ -d "$SRC_APP" ]] || die "Interruptor: app não encontrado."
 
-if [[ "${INSTALL_TO_APPLICATIONS:-}" == "1" ]]; then
-  cp -R "$APP" /Applications/Interruptor.app
-  bold "Copiado para /Applications/Interruptor.app"
-  open -a /Applications/Interruptor.app
-else
-  bold "Pronto: $APP"
-  open "$APP"
-fi
+rm -rf "$DEST_APP"
+ditto "$SRC_APP" "$DEST_APP"
+[[ -x "$LSREGISTER" ]] && "$LSREGISTER" -f "$DEST_APP" >/dev/null 2>&1 || true
+
+printf '\rInterruptor instalado.\n'
+open -a "$DEST_APP"

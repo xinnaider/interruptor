@@ -22,8 +22,10 @@ mkdir -p "$APP/Contents/MacOS" "$RES"
 /usr/libexec/PlistBuddy -c "Set :CFBundleIconFile AppIcon" "$PLIST" 2>/dev/null \
   || /usr/libexec/PlistBuddy -c "Add :CFBundleIconFile string AppIcon" "$PLIST"
 
-echo "⚡ Interruptor v${VERSION} (${BUILD})"
-echo "→ Compilando…"
+log() { [[ "${INTERRUPTOR_QUIET:-}" == "1" ]] || echo "$@"; }
+
+log "⚡ Interruptor v${VERSION} (${BUILD})"
+log "→ Compilando…"
 swiftc -parse-as-library \
   -O \
   -whole-module-optimization \
@@ -38,7 +40,7 @@ swiftc -parse-as-library \
 
 chmod +x "$BIN"
 
-echo "→ Ícone…"
+log "→ Ícone…"
 BUILD_DIR="$ROOT/.build"
 ICONSET="$BUILD_DIR/AppIcon.iconset"
 rm -rf "$BUILD_DIR"
@@ -52,8 +54,12 @@ for size in 16 32 128 256 512; do
 done
 iconutil -c icns "$ICONSET" -o "$RES/AppIcon.icns"
 
-echo "→ Assinando…"
-codesign --force --deep --sign - "$APP"
-codesign --verify --deep --strict "$APP"
+log "→ Assinando…"
+if [[ "${INTERRUPTOR_QUIET:-}" == "1" ]]; then
+  codesign --force --deep --sign - "$APP" 2>/dev/null
+else
+  codesign --force --deep --sign - "$APP"
+fi
+codesign --verify --deep --strict "$APP" 2>/dev/null
 
-echo "✓ $APP"
+log "✓ $APP"
