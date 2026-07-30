@@ -13,8 +13,12 @@ export const copy = {
       line2: "Sem puxar cabo nenhum.",
       sub: "Interruptor vive na barra de menus do macOS. Um clique ou atalho apaga a tela externa e as janelas voltam para o Mac. Só Apple Silicon.",
       github: "Ver no GitHub",
-      proof1: "Grátis e open source",
-      proof2: "Apple Silicon · macOS 14 ou superior · MIT",
+      badges: [
+        "Grátis e open source",
+        "Apple Silicon",
+        "macOS 14+",
+        "MIT",
+      ],
     },
     install: {
       copy: "Copiar",
@@ -107,8 +111,12 @@ export const copy = {
       line2: "Without unplugging a single cable.",
       sub: "Interruptor lives in your Mac menu bar. One click or shortcut turns off the external display and windows return to your Mac. Apple Silicon only.",
       github: "View on GitHub",
-      proof1: "Free and open source",
-      proof2: "Apple Silicon · macOS 14 or later · MIT",
+      badges: [
+        "Free and open source",
+        "Apple Silicon",
+        "macOS 14+",
+        "MIT",
+      ],
     },
     install: {
       copy: "Copy",

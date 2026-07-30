@@ -42,11 +42,7 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
   </header>
 
   <main id="conteudo">
-    <section class="hero container" data-mouse-parallax data-parallax-section>
-      <div class="ambient-wrap" data-parallax-layer data-parallax-speed="0.22" aria-hidden="true">
-        <div class="ambient" data-mouse-depth="0.09"></div>
-      </div>
-
+    <section class="hero container">
       <div class="hero-copy">
         <p class="platform-badge" data-reveal="fade-up">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -79,13 +75,19 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
               <i class="ph ph-copy install-copy-icon" aria-hidden="true"></i>
             </button>
           </div>
-          <a class="hero-github-link" href={GITHUB_URL} rel="noopener noreferrer">
-            <i class="ph ph-github-logo" aria-hidden="true"></i>
-            {c.hero.github}
-          </a>
-          <div class="hero-proof">
-            <span class="hero-proof-line"><i class="ph ph-seal-check" aria-hidden="true"></i> {c.hero.proof1}</span>
-            <span class="hero-proof-line">{c.hero.proof2}</span>
+          <div class="hero-meta">
+            <a class="hero-github-link" href={GITHUB_URL} rel="noopener noreferrer">
+              <i class="ph ph-github-logo" aria-hidden="true"></i>
+              {c.hero.github}
+            </a>
+            {
+              c.hero.badges.map((badge, i) => (
+                <span class="hero-meta-badge">
+                  {i === 0 && <i class="ph ph-seal-check" aria-hidden="true"></i>}
+                  {badge}
+                </span>
+              ))
+            }
           </div>
         </div>
       </div>
@@ -166,7 +168,6 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
     gsap.defaults({ ease: "power2.out", duration: 0.28 });
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
     if (!reduceMotion) {
       const lenis = new Lenis({
@@ -284,74 +285,20 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
 
     function initHeroIntro() {
       const switchWrap = document.querySelector(".hero-switch");
-      const ambient = document.querySelector(".ambient");
       if (reduceMotion) {
-        gsap.set([switchWrap, ambient], { autoAlpha: 1, clearProps: "all" });
+        gsap.set(switchWrap, { autoAlpha: 1, clearProps: "all" });
         return;
       }
-      gsap
-        .timeline({ delay: 0.05 })
-        .fromTo(ambient, { autoAlpha: 0, scale: 0.96 }, { autoAlpha: 1, scale: 1, duration: 0.6 }, 0)
-        .fromTo(
-          switchWrap,
-          { autoAlpha: 0, y: 12, scale: 0.96 },
-          { autoAlpha: 1, y: 0, scale: 1, duration: 0.5 },
-          0.12
-        );
-    }
-
-    function initMouseParallax() {
-      if (reduceMotion || !finePointer) return;
-      gsap.utils.toArray("[data-mouse-parallax]").forEach((sec) => {
-        const section = sec as HTMLElement;
-        const layers = section.querySelectorAll("[data-mouse-depth]");
-        const setters = Array.from(layers).map((layer) => ({
-          depth: Number((layer as HTMLElement).dataset.mouseDepth || 0.04),
-          xTo: gsap.quickTo(layer, "x", { duration: 0.6, ease: "power2.out" }),
-          yTo: gsap.quickTo(layer, "y", { duration: 0.6, ease: "power2.out" }),
-        }));
-        section.addEventListener("pointermove", (event) => {
-          const rect = section.getBoundingClientRect();
-          const x = event.clientX - rect.left - rect.width / 2;
-          const y = event.clientY - rect.top - rect.height / 2;
-          setters.forEach(({ depth, xTo, yTo }) => {
-            xTo(x * depth);
-            yTo(y * depth);
-          });
-        });
-        section.addEventListener("pointerleave", () => {
-          setters.forEach(({ xTo, yTo }) => {
-            xTo(0);
-            yTo(0);
-          });
-        });
-      });
-    }
-
-    function initParallax() {
-      if (reduceMotion) return;
-      gsap.utils.toArray("[data-parallax-layer]").forEach((layer) => {
-        const speed = Number((layer as HTMLElement).dataset.parallaxSpeed || 0.18);
-        const section = layer.closest("[data-parallax-section]") || layer;
-        gsap.to(layer, {
-          y: () => window.innerHeight * speed * -1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: section as Element,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1,
-            invalidateOnRefresh: true,
-          },
-        });
-      });
+      gsap.fromTo(
+        switchWrap,
+        { autoAlpha: 0, y: 12, scale: 0.96 },
+        { autoAlpha: 1, y: 0, scale: 1, duration: 0.5, delay: 0.08 }
+      );
     }
 
     initTextReveals();
     initScrollReveals();
     initHeroIntro();
-    initMouseParallax();
-    initParallax();
     ScrollTrigger.refresh();
 
     document.querySelectorAll("[data-copy-install]").forEach((btn) => {
