@@ -1,0 +1,59 @@
+---
+import {
+  AUTHOR_NAME,
+  AUTHOR_URL,
+  GITHUB_URL,
+  SITE_NAME,
+  SITE_URL,
+  APP_VERSION,
+} from "../consts";
+import type { Lang } from "../i18n";
+import { copy } from "../i18n";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const c = copy[lang];
+const pageUrl = lang === "pt" ? SITE_URL : `${SITE_URL}/en/`;
+const imageUrl = new URL(c.ogImage, SITE_URL).href;
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE_NAME,
+    url: SITE_URL,
+    inLanguage: ["pt-BR", "en"],
+    description: c.metaDescription,
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: SITE_NAME,
+    applicationCategory: "UtilitiesApplication",
+    operatingSystem: "macOS 14",
+    description: c.metaDescription,
+    url: pageUrl,
+    image: imageUrl,
+    downloadUrl: `${SITE_URL}/install.sh`,
+    softwareVersion: APP_VERSION,
+    isAccessibleForFree: true,
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    author: {
+      "@type": "Person",
+      name: AUTHOR_NAME,
+      url: AUTHOR_URL,
+    },
+    license: "https://opensource.org/licenses/MIT",
+    codeRepository: GITHUB_URL,
+  },
+];
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

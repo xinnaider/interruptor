@@ -7,6 +7,7 @@ SRC_APP="$DIR/app/Interruptor.app"
 DEST_APP="/Applications/Interruptor.app"
 LSREGISTER="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister"
 TOTAL_STEPS=3
+BAR_WIDTH=24
 
 R=$'\033[0m'
 B=$'\033[1m'
@@ -16,10 +17,16 @@ O=$'\033[38;5;214m'
 G=$'\033[32m'
 
 STEP=0
-SPIN_PID=""
+ANIM_PID=""
+STEP_FLAG=""
+
+version_ge() {
+  [[ "$(printf '%s\n' "$2" "$1" | sort -V | head -1)" == "$2" ]]
+}
 
 cleanup() {
-  [[ -n "$SPIN_PID" ]] && kill "$SPIN_PID" 2>/dev/null || true
+  [[ -n "$ANIM_PID" ]] && kill "$ANIM_PID" 2>/dev/null || true
+  [[ -n "$STEP_FLAG" ]] && rm -f "$STEP_FLAG"
 }
 trap cleanup EXIT
 
@@ -27,6 +34,18 @@ die() {
   cleanup
   printf '\n  %s✗ %s%s\n\n' "$O" "$1" "$R" >&2
   exit 1
+}
+
+check_requirements() {
+  [[ "$(uname)" == "Darwin" ]] || die "Só macOS."
+  [[ "$(uname -m)" == "arm64" ]] || die "Só Apple Silicon."
+
+  local macos_version
+  macos_version="$(sw_vers -productVersion 2>/dev/null || echo 0)"
+  version_ge "$macos_version" "14.0" || die "Requer macOS 14 ou superior (detectado: $macos_version)."
+
+  command -v git >/dev/null || die "git não encontrado."
+  command -v swiftc >/dev/null || die "Instale Xcode Command Line Tools (xcode-select --install)."
 }
 
 header() {
@@ -40,37 +59,73 @@ header() {
   printf '  %sDesligue o monitor sem puxar o cabo.%s\n\n' "$D" "$R"
 }
 
-progress_bar() {
-  local width=28
-  local filled=$(( STEP * width / TOTAL_STEPS ))
-  local empty=$(( width - filled ))
+bar_string() {
+  local step=$1
+  local tick=${2:-0}
+  local base=$(( (step - 1) * BAR_WIDTH / TOTAL_STEPS ))
+  local cap=$(( step * BAR_WIDTH / TOTAL_STEPS ))
+  local span=$(( cap - base ))
+  local filled=$base
+  local head=-1
+
+  if (( step > 0 && step <= TOTAL_STEPS && span > 0 )); then
+    filled=$(( base + 1 + tick % span ))
+    (( filled > cap )) && filled=$cap
+    head=$filled
+    if (( filled < cap )); then
+      head=$(( filled + 1 ))
+    fi
+  elif (( step > TOTAL_STEPS )); then
+    filled=$BAR_WIDTH
+  fi
+
+  local out="  ${K}[${R}"
   local i
-  printf '  %s[' "$K"
-  for ((i = 0; i < filled; i++)); do printf '%s█%s' "$O" "$K"; done
-  for ((i = 0; i < empty; i++)); do printf '░'; done
-  printf ']%s %d/%d%s\n\n' "$D" "$STEP" "$TOTAL_STEPS" "$R"
+  for ((i = 0; i < BAR_WIDTH; i++)); do
+    if (( i < filled )); then
+      out+="${O}█${K}"
+    elif (( i == head && head >= 0 )); then
+      out+="${O}▓${K}"
+    else
+      out+='░'
+    fi
+  done
+  out+="${K}]${D} ${step}/${TOTAL_STEPS}${R}"
+  printf '%s' "$out"
 }
 
-start_spinner() {
+render_active_line() {
+  local frame=$1
+  local label=$2
+  local spin=(⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏)
+  local s=${spin[$((frame % 10))]}
+  printf '\r  %s %s%-18s%s  %s' "$s" "$B" "$label" "$R" "$(bar_string "$STEP" "$frame")"
+}
+
+start_line_animation() {
   local label=$1
+  STEP_FLAG="$(mktemp "${TMPDIR:-/tmp}/interruptor-step.XXXXXX")"
   (
-    while true; do
-      for frame in ⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏; do
-        printf '\r  %s %s%-18s%s' "$frame" "$B" "$label" "$R"
-        sleep 0.09
-      done
+    frame=0
+    while [[ -f "$STEP_FLAG" ]]; do
+      render_active_line "$frame" "$label"
+      frame=$((frame + 1))
+      sleep 0.09
     done
   ) &
-  SPIN_PID=$!
+  ANIM_PID=$!
 }
 
-stop_spinner() {
+stop_line_animation() {
   local label=$1
   local ok=$2
-  cleanup
-  SPIN_PID=""
+  rm -f "$STEP_FLAG"
+  STEP_FLAG=""
+  [[ -n "$ANIM_PID" ]] && wait "$ANIM_PID" 2>/dev/null || true
+  ANIM_PID=""
+
   if (( ok == 0 )); then
-    printf '\r  %s✓%s %-18s\n' "$G" "$R" "$label"
+    printf '\r  %s✓%s %-18s  %s\n' "$G" "$R" "$label" "$(bar_string "$STEP" 0)"
   else
     printf '\r  %s✗%s %-18s\n' "$O" "$R" "$label"
   fi
@@ -80,21 +135,16 @@ run_step() {
   local label=$1
   shift
   STEP=$((STEP + 1))
-  start_spinner "$label"
+  start_line_animation "$label"
   set +e
   "$@" >/dev/null 2>&1
   local status=$?
   set -e
-  stop_spinner "$label" "$status"
+  stop_line_animation "$label" "$status"
   (( status == 0 )) || die "Falhou em: $label"
-  progress_bar
 }
 
-[[ "$(uname)" == "Darwin" ]] || die "Só macOS."
-[[ "$(uname -m)" == "arm64" ]] || die "Só Apple Silicon."
-command -v git >/dev/null || die "git não encontrado."
-command -v swiftc >/dev/null || die "Instale Xcode Command Line Tools."
-
+check_requirements
 header
 
 run_step "Baixando código" bash -c '

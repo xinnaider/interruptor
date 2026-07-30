@@ -6,6 +6,9 @@ export const copy = {
     metaTitle: "Interruptor — desligue o monitor externo do Mac sem puxar o cabo",
     metaDescription:
       "App de barra de menus para macOS que desliga o monitor externo com um clique ou atalho, sem tirar o cabo. Grátis e open source.",
+    ogImage: "/og-image.png",
+    ogImageAlt:
+      "Interruptor: app de barra de menus para desligar o monitor externo do Mac sem puxar o cabo.",
     skipLink: "Pular para o conteúdo",
     hero: {
       badge: "Exclusivo para Mac",
@@ -103,6 +106,9 @@ export const copy = {
     metaTitle: "Interruptor — turn off your Mac's external display without unplugging the cable",
     metaDescription:
       "A menu bar app for macOS that turns off your external display with one click or shortcut, no cable pulling. Free and open source.",
+    ogImage: "/og-image-en.png",
+    ogImageAlt:
+      "Interruptor: menu bar app to turn off your Mac external display without unplugging the cable.",
     skipLink: "Skip to content",
     hero: {
       badge: "Mac only",

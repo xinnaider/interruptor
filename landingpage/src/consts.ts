@@ -1,3 +1,9 @@
 export const SITE_URL = "https://interruptor.jfernando.dev";
+export const SITE_NAME = "Interruptor";
 export const GITHUB_URL = "https://github.com/xinnaider/interruptor";
+export const AUTHOR_NAME = "Jose Fernando";
+export const AUTHOR_URL = "https://github.com/xinnaider";
+export const APP_VERSION = "1.0.0";
 export const INSTALL_CMD = `curl -fsSL ${SITE_URL}/install.sh | bash`;
+export const OG_IMAGE_WIDTH = 1200;
+export const OG_IMAGE_HEIGHT = 630;

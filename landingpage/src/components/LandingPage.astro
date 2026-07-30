@@ -2,6 +2,7 @@
 import Base from "../layouts/Base.astro";
 import HeroSwitch from "./HeroSwitch.astro";
 import Fireflies from "./Fireflies.astro";
+import JsonLd from "./JsonLd.astro";
 import { GITHUB_URL, INSTALL_CMD } from "../consts";
 import { copy, type Lang } from "../i18n";
 
@@ -14,7 +15,15 @@ const c = copy[lang];
 const otherLang: Lang = lang === "pt" ? "en" : "pt";
 ---
 
-<Base title={c.metaTitle} description={c.metaDescription} lang={c.htmlLang} skipLink={c.skipLink}>
+<Base
+  title={c.metaTitle}
+  description={c.metaDescription}
+  lang={c.htmlLang}
+  skipLink={c.skipLink}
+  path={lang === "pt" ? "/" : "/en/"}
+  ogImage={c.ogImage}
+  ogImageAlt={c.ogImageAlt}
+>
   <header class="site-header">
     <nav class="nav-pill" aria-label="Principal">
       <a class="brand" href={lang === "pt" ? "/" : "/en/"}>
@@ -156,6 +165,7 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
     </div>
   </footer>
 
+  <JsonLd lang={lang} />
   <Fireflies slot="overlays" />
 
   <script>
