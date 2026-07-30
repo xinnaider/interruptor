@@ -12,7 +12,7 @@ ZIP="$OUT/Interruptor-${VERSION}.zip"
 rm -rf "$OUT"
 mkdir -p "$OUT"
 
-echo "→ Empacotando $ZIP…"
+echo "Empacotando ${ZIP}..."
 ditto -c -k --sequesterRsrc --keepParent "$APP" "$ZIP"
 
 # appcast consumido pelo updater no Mac
@@ -28,5 +28,5 @@ EOF
 
 cp "$OUT/appcast.json" "$ROOT/landingpage/public/appcast.json"
 
-echo "✓ Artefatos em $OUT"
+echo "Artefatos em $OUT"
 ls -lh "$OUT"

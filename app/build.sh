@@ -18,7 +18,7 @@ mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD" "$PLIST" 2>/dev/null \
   || /usr/libexec/PlistBuddy -c "Add :CFBundleVersion string $BUILD" "$PLIST"
 
-echo "→ Compilando Interruptor v${VERSION} (${BUILD})…"
+echo "Compilando Interruptor v${VERSION} (${BUILD})..."
 swiftc -parse-as-library \
   -O \
   -whole-module-optimization \
@@ -32,4 +32,4 @@ swiftc -parse-as-library \
   "$ROOT"/Sources/*.swift
 
 chmod +x "$BIN"
-echo "✓ Pronto: $APP"
+echo "Pronto: $APP"
