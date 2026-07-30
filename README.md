@@ -38,21 +38,13 @@ Produção: https://interruptor.jfernando.dev
 
 ### Landing (push em `main`)
 
-Workflow `.github/workflows/landing.yml`:
+Workflow `.github/workflows/landing.yml` no runner **self-hosted** da Contabo:
 
-1. Build Astro
-2. Push imagem `ghcr.io/xinnaider/interruptor-landing:latest`
-3. Deploy SSH na Contabo (`~/interruptor-landing`, porta `3002`)
-4. Nginx + cert Let's Encrypt para `interruptor.jfernando.dev` (primeiro deploy)
+1. `git pull` em `/home/gha-runner/interruptor`
+2. `docker build` da landing
+3. `docker compose up` em `/home/gha-runner/interruptor-landing`
 
-**Secrets no repo** (já usados em outros projetos):
-
-| Secret | Uso |
-|--------|-----|
-| `SERVER_HOST` | IP Contabo |
-| `SERVER_USER` | `root` |
-| `SERVER_SSH_KEY` | chave SSH |
-| `LETSENCRYPT_EMAIL` | email para certbot |
+Sem secrets SSH. Runner registrado como `contabo-interruptor`.
 
 ### Release macOS (tag `v*`)
 

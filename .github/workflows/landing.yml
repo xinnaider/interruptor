@@ -15,14 +15,11 @@ on:
       - ".github/workflows/landing.yml"
   workflow_dispatch:
 
-permissions:
-  contents: read
-  packages: write
-
 jobs:
-  build:
+  check:
     name: Build landing
-    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
 
@@ -38,81 +35,38 @@ jobs:
           npm ci
           npm run build
 
-  publish:
-    name: Build & push image
-    runs-on: ubuntu-latest
-    needs: build
-    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ghcr.io/xinnaider/interruptor-landing
-          tags: |
-            type=sha,prefix=
-            type=raw,value=latest
-
-      - uses: docker/build-push-action@v6
-        with:
-          context: landingpage
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-
   deploy:
-    name: Deploy interruptor.jfernando.dev
-    runs-on: ubuntu-latest
-    needs: publish
-    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    name: Build & deploy interruptor.jfernando.dev
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v4
+      - name: Sync repo & restart stack
+        run: |
+          set -e
+          REPO=/home/gha-runner/interruptor
+          STACK=/home/gha-runner/interruptor-landing
 
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1
-        env:
-          GHCR_USER: ${{ github.actor }}
-          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          envs: GHCR_USER,GHCR_TOKEN
-          script: |
-            set -e
-            mkdir -p ~/interruptor-landing
-            cd ~/interruptor-landing
+          if [ ! -d "$REPO/.git" ]; then
+            git clone https://github.com/xinnaider/interruptor.git "$REPO"
+          fi
 
-            # compose de produção (sincronizado do repo)
-            curl -fsSL -o docker-compose.yml \
-              "https://raw.githubusercontent.com/xinnaider/interruptor/${{ github.ref_name }}/deploy/docker-compose.yml"
+          cd "$REPO"
+          git fetch origin
+          git checkout -B main origin/main
 
-            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
-            docker compose pull
-            docker compose up -d --remove-orphans
+          echo "--- Build image (local) ---"
+          docker build -t ghcr.io/xinnaider/interruptor-landing:latest ./landingpage
 
-            # nginx + cert na primeira vez (idempotente)
-            if ! grep -q "interruptor.jfernando.dev" /etc/nginx/sites-available/jfernando.dev 2>/dev/null; then
-              curl -fsSL -o /tmp/nginx-interruptor.conf \
-                "https://raw.githubusercontent.com/xinnaider/interruptor/${{ github.ref_name }}/deploy/nginx-interruptor.conf"
-              cat /tmp/nginx-interruptor.conf >> /etc/nginx/sites-available/jfernando.dev
-              nginx -t
-              systemctl reload nginx
-            fi
+          mkdir -p "$STACK"
+          cp deploy/docker-compose.yml "$STACK/docker-compose.yml"
 
-            if [ ! -d /etc/letsencrypt/live/interruptor.jfernando.dev ]; then
-              certbot certonly --webroot -w /var/www/certbot \
-                -d interruptor.jfernando.dev \
-                --non-interactive --agree-tos -m "${{ secrets.LETSENCRYPT_EMAIL }}"
-              nginx -t && systemctl reload nginx
-            fi
+          echo "--- Restart containers ---"
+          cd "$STACK"
+          docker compose up -d --force-recreate --remove-orphans
 
-            sleep 3
-            curl -sf http://127.0.0.1:3002/health && echo "Health OK"
+          echo "--- Prune stale images ---"
+          docker image prune -f
+
+          echo "--- Health check ---"
+          sleep 3
+          curl -sf http://127.0.0.1:3002/health && echo "Health OK"
