@@ -404,9 +404,13 @@ a { color: inherit; }
   box-shadow: 0 0 20px var(--warm-soft);
 }
 
-/* install */
-.install .section-head { max-width: 34rem; }
-.install-sub { color: var(--ink-2); font-size: var(--text-lg); line-height: 1.5; margin-top: var(--sp-100); }
+.hero .install-block { margin-bottom: var(--sp-200); }
+.hero-github { margin-bottom: var(--sp-300); font-size: var(--text-sm); }
+.hero-github a { color: var(--accent); text-decoration: none; }
+@media (hover: hover) and (pointer: fine) {
+  .hero-github a:hover { text-decoration: underline; }
+}
+
 .install-block {
   display: flex;
   flex-direction: column;
@@ -520,6 +524,13 @@ a { color: inherit; }
   font-size: var(--text-lg);
   max-width: 30rem;
   margin-inline: auto;
+  margin-bottom: var(--sp-200);
+}
+.final-github { font-size: var(--text-base); }
+.final-github a { color: var(--accent); text-decoration: none; }
+@media (hover: hover) and (pointer: fine) {
+  .final-github a:hover { text-decoration: underline; }
+}
   margin-bottom: var(--sp-500);
 }
 .final .cta-row { justify-content: center; }

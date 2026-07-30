@@ -22,7 +22,6 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
         Interruptor
       </a>
       <div class="nav-links">
-        <a href="#instalar">{c.install.eyebrow}</a>
         <a href="#faq">{c.faq.eyebrow}</a>
         <a href={GITHUB_URL} rel="noopener noreferrer">GitHub</a>
         <span class="lang-divider" aria-hidden="true"></span>
@@ -66,38 +65,23 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
         <p class="sub" data-reveal="fade-up" data-reveal-delay="0.2">
           {c.hero.sub}
         </p>
-        <div class="cta-row" data-reveal="fade-up" data-reveal-delay="0.28">
-          <a class="btn btn-primary" href="#instalar">
-            <i class="ph ph-terminal-window" aria-hidden="true"></i>
-            {c.hero.download}
-          </a>
-          <a class="btn btn-secondary" href={GITHUB_URL} rel="noopener noreferrer">
-            <i class="ph ph-github-logo" aria-hidden="true"></i>
-            {c.hero.github}
-          </a>
+        <div class="install-block" data-reveal="fade-up" data-reveal-delay="0.28">
+          <pre class="install-cmd"><code id="install-cmd">{INSTALL_CMD}</code></pre>
+          <button type="button" class="btn btn-primary install-copy" data-copy-install data-label={c.install.copy} data-copied={c.install.copied}>
+            <i class="ph ph-copy" aria-hidden="true"></i>
+            <span>{c.install.copy}</span>
+          </button>
         </div>
-        <div class="proof" data-reveal="fade-up" data-reveal-delay="0.36">
+        <p class="hero-github" data-reveal="fade-up" data-reveal-delay="0.34">
+          <a href={GITHUB_URL} rel="noopener noreferrer">{c.hero.github}</a>
+        </p>
+        <div class="proof" data-reveal="fade-up" data-reveal-delay="0.4">
           <span><i class="ph ph-seal-check" aria-hidden="true"></i> {c.hero.proof1}</span>
           <span>{c.hero.proof2}</span>
         </div>
       </div>
 
       <HeroSwitch labelOn={c.switch.on} labelOff={c.switch.off} />
-    </section>
-
-    <section class="section container install" id="instalar" aria-labelledby="instalar-titulo">
-      <div class="section-head">
-        <p class="eyebrow" data-reveal="fade-up">{c.install.eyebrow}</p>
-        <h2 id="instalar-titulo" data-motion-text="words">{c.install.title}</h2>
-        <p class="install-sub" data-reveal="fade-up">{c.install.sub}</p>
-      </div>
-      <div class="install-block" data-reveal="fade-up" data-reveal-delay="0.1">
-        <pre class="install-cmd"><code id="install-cmd">{INSTALL_CMD}</code></pre>
-        <button type="button" class="btn btn-primary install-copy" data-copy-install data-label={c.install.copy} data-copied={c.install.copied}>
-          <i class="ph ph-copy" aria-hidden="true"></i>
-          <span>{c.install.copy}</span>
-        </button>
-      </div>
     </section>
 
     <section class="section container" aria-labelledby="recursos-titulo">
@@ -145,16 +129,9 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
     <section class="final container" aria-labelledby="final-titulo">
       <h2 id="final-titulo" class="gradient-text" data-motion-text="words">{c.final.title}</h2>
       <p data-reveal="fade-up">{c.final.sub}</p>
-      <div class="cta-row" data-reveal="fade-up" data-reveal-delay="0.15">
-        <a class="btn btn-primary" href="#instalar">
-          <i class="ph ph-terminal-window" aria-hidden="true"></i>
-          {c.hero.download}
-        </a>
-        <a class="btn btn-secondary" href={GITHUB_URL} rel="noopener noreferrer">
-          <i class="ph ph-github-logo" aria-hidden="true"></i>
-          {c.hero.github}
-        </a>
-      </div>
+      <p class="final-github" data-reveal="fade-up" data-reveal-delay="0.1">
+        <a href={GITHUB_URL} rel="noopener noreferrer">{c.hero.github}</a>
+      </p>
     </section>
   </main>
 
@@ -163,7 +140,6 @@ const otherLang: Lang = lang === "pt" ? "en" : "pt";
       <span>{c.footer.note}</span>
       <div class="footer-links">
         <a href={GITHUB_URL} rel="noopener noreferrer">GitHub</a>
-        <a href="#instalar">{c.footer.install}</a>
         <a href="#conteudo">{c.footer.top}</a>
       </div>
     </div>

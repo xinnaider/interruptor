@@ -12,15 +12,11 @@ export const copy = {
       line1: "Desligue o seu monitor externo.",
       line2: "Sem puxar cabo nenhum.",
       sub: "Interruptor vive na barra de menus do macOS. Um clique ou atalho apaga a tela externa e as janelas voltam para o Mac. Só Apple Silicon.",
-      download: "Instalar no Mac",
       github: "Ver no GitHub",
       proof1: "Grátis e open source",
       proof2: "Apple Silicon · macOS 14 ou superior · MIT",
     },
     install: {
-      eyebrow: "Instalação",
-      title: "Um comando no Terminal.",
-      sub: "Cole, aperte Enter e o Interruptor abre.",
       copy: "Copiar",
       copied: "Copiado!",
     },
@@ -76,7 +72,7 @@ export const copy = {
         },
         {
           q: "Como instalo?",
-          a: "Cole o comando da seção Instalação no Terminal e aperte Enter.",
+          a: "Cole o comando acima no Terminal e aperte Enter.",
         },
         {
           q: "É grátis?",
@@ -90,7 +86,6 @@ export const copy = {
     },
     footer: {
       note: "Interruptor · licença MIT · feito em Swift",
-      install: "Instalar",
       top: "Voltar ao topo",
     },
     switch: {
@@ -111,15 +106,11 @@ export const copy = {
       line1: "Turn off your external display.",
       line2: "Without unplugging a single cable.",
       sub: "Interruptor lives in your Mac menu bar. One click or shortcut turns off the external display and windows return to your Mac. Apple Silicon only.",
-      download: "Install on Mac",
       github: "View on GitHub",
       proof1: "Free and open source",
       proof2: "Apple Silicon · macOS 14 or later · MIT",
     },
     install: {
-      eyebrow: "Installation",
-      title: "One Terminal command.",
-      sub: "Paste, press Enter, and Interruptor opens.",
       copy: "Copy",
       copied: "Copied!",
     },
@@ -175,7 +166,7 @@ export const copy = {
         },
         {
           q: "How do I install?",
-          a: "Paste the command from the Installation section in Terminal and press Enter.",
+          a: "Paste the command above in Terminal and press Enter.",
         },
         {
           q: "Is it free?",
@@ -189,7 +180,6 @@ export const copy = {
     },
     footer: {
       note: "Interruptor · MIT license · built in Swift",
-      install: "Install",
       top: "Back to top",
     },
     switch: {
