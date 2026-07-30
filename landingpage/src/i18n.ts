@@ -16,8 +16,7 @@ export const copy = {
       badges: [
         "Grátis e open source",
         "Apple Silicon",
-        "macOS 14+",
-        "MIT",
+        "macOS 14+ · MIT",
       ],
     },
     install: {
@@ -114,8 +113,7 @@ export const copy = {
       badges: [
         "Free and open source",
         "Apple Silicon",
-        "macOS 14+",
-        "MIT",
+        "macOS 14+ · MIT",
       ],
     },
     install: {

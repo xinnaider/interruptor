@@ -458,7 +458,11 @@ a { color: inherit; }
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--sp-100);
+  gap: var(--sp-75);
+}
+
+.hero-meta > * {
+  flex: 0 0 auto;
 }
 
 .hero-github-link {
