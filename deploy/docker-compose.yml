@@ -1,6 +1,12 @@
 services:
   interruptor-landing:
-    image: ghcr.io/xinnaider/interruptor-landing:latest
+    build:
+      context: ../landingpage
+      dockerfile: Dockerfile
     restart: unless-stopped
-    ports:
-      - "127.0.0.1:3002:80"
+    networks:
+      - dokploy-network
+
+networks:
+  dokploy-network:
+    external: true
