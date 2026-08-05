@@ -18,8 +18,7 @@ on:
 jobs:
   check:
     name: Build landing
-    if: github.event_name == 'pull_request'
-    runs-on: [self-hosted, Linux]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -35,38 +34,4 @@ jobs:
           npm ci
           npm run build
 
-  deploy:
-    name: Build & deploy interruptor.jfernando.dev
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-    runs-on: [self-hosted, Linux]
-    steps:
-      - name: Sync repo & restart stack
-        run: |
-          set -e
-          REPO=/home/gha-runner/interruptor
-          STACK=/home/gha-runner/interruptor-landing
-
-          if [ ! -d "$REPO/.git" ]; then
-            git clone https://github.com/xinnaider/interruptor.git "$REPO"
-          fi
-
-          cd "$REPO"
-          git fetch origin
-          git checkout -B main origin/main
-
-          echo "--- Build image (local) ---"
-          docker build -t ghcr.io/xinnaider/interruptor-landing:latest ./landingpage
-
-          mkdir -p "$STACK"
-          cp deploy/docker-compose.yml "$STACK/docker-compose.yml"
-
-          echo "--- Restart containers ---"
-          cd "$STACK"
-          docker compose up -d --force-recreate --remove-orphans
-
-          echo "--- Prune stale images ---"
-          docker image prune -f
-
-          echo "--- Health check ---"
-          sleep 3
-          curl -sf http://127.0.0.1:3002/health && echo "Health OK"
+  # Deploy: Dokploy auto-deploy (GitHub webhook)
