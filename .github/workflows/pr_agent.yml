@@ -22,6 +22,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI__KEY: ${{ secrets.OPENAI_KEY }}
           OPENAI__API_BASE: ${{ secrets.OPENAI_API_BASE }}
+          # Must be in workflow env: .pr_agent.toml is only read from default branch
+          config.model: "openai/clinepass/cline-pass/deepseek-v4-flash"
+          config.fallback_models: '["openai/clinepass/cline-pass/deepseek-v4-flash"]'
+          config.custom_model_max_tokens: "128000"
           github_action_config.auto_review: "true"
           github_action_config.auto_describe: "true"
           github_action_config.auto_improve: "true"
