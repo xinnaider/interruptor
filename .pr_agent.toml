@@ -1,7 +1,7 @@
 [config]
 # OpenAI-compatible via 9router (LiteLLM openai/ prefix)
-model = "openai/clinepass/cline-pass/deepseek-v4-flash"
-fallback_models = ["openai/clinepass/cline-pass/deepseek-v4-flash"]
+model = "openai/clinepass/cline-pass/kimi-k2.7-code"
+fallback_models = ["openai/clinepass/cline-pass/kimi-k2.7-code"]
 custom_model_max_tokens = 128000
 
 [pr_reviewer]
