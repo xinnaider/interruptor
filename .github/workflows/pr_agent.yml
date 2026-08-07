@@ -20,12 +20,16 @@ jobs:
         uses: the-pr-agent/pr-agent@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # both forms — Action docs use OPENAI__*; runner also checks OPENAI_KEY
+          OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
           OPENAI__KEY: ${{ secrets.OPENAI_KEY }}
           OPENAI__API_BASE: ${{ secrets.OPENAI_API_BASE }}
-          # Must be in workflow env: .pr_agent.toml is only read from default branch
+          # .pr_agent.toml only loads from default branch — pin model here
           config.model: "openai/clinepass/cline-pass/deepseek-v4-flash"
           config.fallback_models: '["openai/clinepass/cline-pass/deepseek-v4-flash"]'
           config.custom_model_max_tokens: "128000"
           github_action_config.auto_review: "true"
           github_action_config.auto_describe: "true"
           github_action_config.auto_improve: "true"
+          github_action_config.handle_push_trigger: "true"
+          github_action_config.pr_actions: '["opened","reopened","ready_for_review","synchronize"]'
