@@ -6,33 +6,43 @@ DIR="${INTERRUPTOR_DIR:-$HOME/.local/src/interruptor}"
 SRC_APP="$DIR/app/Interruptor.app"
 DEST_APP="/Applications/Interruptor.app"
 LSREGISTER="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister"
-TOTAL_STEPS=3
-BAR_WIDTH=24
+INTERACTIVE=0
+if [[ -t 1 && -z "${NO_COLOR+x}" ]]; then INTERACTIVE=1; fi
 
-R=$'\033[0m'
-B=$'\033[1m'
-D=$'\033[2m'
-K=$'\033[90m'
-O=$'\033[38;5;214m'
-G=$'\033[32m'
+R=""
+B=""
+D=""
+O=""
+G=""
+if (( INTERACTIVE )); then
+  R=$'\033[0m'
+  B=$'\033[1m'
+  D=$'\033[2m'
+  O=$'\033[38;5;214m'
+  G=$'\033[32m'
+fi
 
-STEP=0
 ANIM_PID=""
 STEP_FLAG=""
+STEP_LOG=""
 
 version_ge() {
   [[ "$(printf '%s\n' "$2" "$1" | sort -V | head -1)" == "$2" ]]
 }
 
 cleanup() {
+  local status=$?
   [[ -n "$ANIM_PID" ]] && kill "$ANIM_PID" 2>/dev/null || true
   [[ -n "$STEP_FLAG" ]] && rm -f "$STEP_FLAG" || true
+  [[ -n "$STEP_LOG" ]] && rm -f "$STEP_LOG" || true
+  (( INTERACTIVE )) && printf '\033[?25h%s' "$R"
+  return "$status"
 }
 trap cleanup EXIT
+trap 'exit 130' INT TERM
 
 die() {
-  cleanup
-  printf '\n  %s✗ %s%s\n\n' "$O" "$1" "$R" >&2
+  printf '\n  %s✗%s %s\n\n' "$O" "$R" "$1" >&2
   exit 1
 }
 
@@ -49,62 +59,26 @@ check_requirements() {
 }
 
 header() {
-  printf '\n'
-  printf '  %s╭──────────────╮%s\n' "$O" "$R"
-  printf '  %s│%s  ┌────────┐   %s│%s\n' "$O" "$R" "$O" "$R"
-  printf '  %s│%s  │ %s║%s      │   %s│%s\n' "$O" "$R" "$B" "$R" "$O" "$R"
-  printf '  %s│%s  └────────┘   %s│%s\n' "$O" "$R" "$O" "$R"
-  printf '  %s╰──────────────╯%s\n' "$O" "$R"
-  printf '\n  %sInterruptor%s\n' "$B" "$R"
-  printf '  %sDesligue o monitor sem puxar o cabo.%s\n\n' "$D" "$R"
-}
-
-bar_string() {
-  local step=$1
-  local mode=${2:-done}
-  local base=$(( (step - 1) * BAR_WIDTH / TOTAL_STEPS ))
-  local cap=$(( step * BAR_WIDTH / TOTAL_STEPS ))
-  local span=$(( cap - base ))
-  local head=-1
-
-  if [[ "$mode" != "done" ]] && (( span > 0 )); then
-    head=$(( base + mode % span ))
-  fi
-
-  local out="  ${K}[${R}"
-  local i
-  for ((i = 0; i < BAR_WIDTH; i++)); do
-    if (( i < base )); then
-      out+="${O}█${K}"
-    elif [[ "$mode" == "done" ]] && (( i < cap )); then
-      out+="${O}█${K}"
-    elif [[ "$mode" != "done" ]] && (( i == head )); then
-      out+="${O}█${K}"
-    else
-      out+='░'
-    fi
-  done
-  out+="${K}]${D} ${step}/${TOTAL_STEPS}${R}"
-  printf '%s' "$out"
-}
-
-render_active_line() {
-  local frame=$1
-  local label=$2
-  local spin=(⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏)
-  local s=${spin[$((frame % 10))]}
-  printf '\r  %s %s%-20s%s  %s' "$s" "$B" "$label" "$R" "$(bar_string "$STEP" "$frame")"
+  printf '\n  %sINTERRUPTOR%s\n' "$B" "$R"
+  printf '  %sInstalador para macOS%s\n\n' "$D" "$R"
 }
 
 start_line_animation() {
   local label=$1
+  if (( ! INTERACTIVE )); then
+    printf '  · %s...\n' "$label"
+    return
+  fi
+
   STEP_FLAG="$(mktemp "${TMPDIR:-/tmp}/interruptor-step.XXXXXX")"
+  printf '\033[?25l'
   (
-    frame=0
+    local frame=0
+    local spin=(⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏)
     while [[ -f "$STEP_FLAG" ]]; do
-      render_active_line "$frame" "$label"
+      printf '\r\033[2K  %s%s%s %s' "$O" "${spin[$((frame % 10))]}" "$R" "$label"
       frame=$((frame + 1))
-      sleep 0.09
+      sleep 0.08
     done
   ) &
   ANIM_PID=$!
@@ -112,30 +86,49 @@ start_line_animation() {
 
 stop_line_animation() {
   local label=$1
-  local ok=$2
-  rm -f "$STEP_FLAG"
-  STEP_FLAG=""
-  [[ -n "$ANIM_PID" ]] && wait "$ANIM_PID" 2>/dev/null || true
-  ANIM_PID=""
+  local status=$2
+  local elapsed=$3
 
-  if (( ok == 0 )); then
-    printf '\r  %s✓%s %-20s  %s\n' "$G" "$R" "$label" "$(bar_string "$STEP" done)"
-  else
-    printf '\r  %s✗%s %-20s\n' "$O" "$R" "$label"
+  if (( INTERACTIVE )); then
+    rm -f "$STEP_FLAG"
+    STEP_FLAG=""
+    [[ -n "$ANIM_PID" ]] && wait "$ANIM_PID" 2>/dev/null || true
+    ANIM_PID=""
+    printf '\r\033[2K'
   fi
+
+  if (( status == 0 )); then
+    printf '  %s✓%s %-20s %s%ss%s\n' "$G" "$R" "$label" "$D" "$elapsed" "$R"
+  else
+    printf '  %s✗%s %s\n' "$O" "$R" "$label" >&2
+  fi
+}
+
+print_step_error() {
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    printf '    %s\n' "$line" >&2
+  done < "$STEP_LOG"
 }
 
 run_step() {
   local label=$1
   shift
-  STEP=$((STEP + 1))
+  local started status elapsed
+  started=$(date +%s)
+  STEP_LOG="$(mktemp "${TMPDIR:-/tmp}/interruptor-log.XXXXXX")"
   start_line_animation "$label"
   set +e
-  "$@" >/dev/null 2>&1
-  local status=$?
+  "$@" >"$STEP_LOG" 2>&1
+  status=$?
   set -e
-  stop_line_animation "$label" "$status"
-  (( status == 0 )) || die "Falhou em: $label"
+  elapsed=$(( $(date +%s) - started ))
+  stop_line_animation "$label" "$status" "$elapsed"
+  if (( status != 0 )); then
+    print_step_error
+    exit "$status"
+  fi
+  rm -f "$STEP_LOG"
+  STEP_LOG=""
 }
 
 check_requirements
