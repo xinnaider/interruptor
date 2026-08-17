@@ -7,10 +7,6 @@ struct InterruptorApp: App {
     @State private var shortcuts = ShortcutStore()
     @State private var hotKey = HotKeyController()
 
-    init() {
-        NSApp.setActivationPolicy(.accessory)
-    }
-
     var body: some Scene {
         MenuBarExtra {
             InterruptorPanel(store: store, shortcuts: shortcuts) {
