@@ -26,7 +26,7 @@ version_ge() {
 
 cleanup() {
   [[ -n "$ANIM_PID" ]] && kill "$ANIM_PID" 2>/dev/null || true
-  [[ -n "$STEP_FLAG" ]] && rm -f "$STEP_FLAG"
+  [[ -n "$STEP_FLAG" ]] && rm -f "$STEP_FLAG" || true
 }
 trap cleanup EXIT
 
@@ -146,7 +146,8 @@ run_step "Baixando código" bash -c '
     mkdir -p "'$(dirname "$DIR")'"
     git clone --quiet --depth 1 "'"$REPO"'" "'"$DIR"'"
   else
-    git -C "'"$DIR"'" pull --quiet --ff-only || true
+    git -C "'"$DIR"'" checkout -- app/Interruptor.app/Contents/Info.plist
+    git -C "'"$DIR"'" pull --quiet --ff-only
   fi
 '
 
